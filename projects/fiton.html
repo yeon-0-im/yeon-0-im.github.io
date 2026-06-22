@@ -174,7 +174,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);bac
 
     <div class="section rev">
       <div class="img-placeholder" id="ph-main">
-        <img src="/src/project/fiton/fiton_pipeline.png" alt="FIT:ON 시스템 파이프라인">
+        <img src="/src/project/fiton/fiton_full_process.png" alt="FIT:ON 시스템 파이프라인">
       </div>
     </div>
 
@@ -244,28 +244,28 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);bac
 
     <div class="section rev">
       <h2 class="section-h">System Architecture</h2>
-      <div class="img-placeholder" id="ph-arch">
-        <img src="/src/project/fiton/fiton_full_process.png" alt="FIT:ON 시스템 아키텍쳐">
+      <div class="arch-box">
+        <span class="hl">Input</span>: 3장의 사진 (정면 / 측면 / 후면) + 의자 모델 정보 + 개인정보<br>
+            ↓<br>
+        <span class="hl2">VitPose</span>: SOTA Keypoint 추출 (측정 오차 최소화)<br>
+        <span class="hl2">Meshroom</span>: 3D Mesh Reconstruction (Reality 환경 구현)<br>
+            ↓<br>
+        <span class="hl">Image Alignment + Pose Transfer</span>: Skeleton Point + Mesh 정보 보정<br>
+            ↓<br>
+        <span class="hl2">신체 치수 계산</span>: 어깨너비, 좌판 깊이 등 인체공학적 수치 도출<br>
+            ↓<br>
+        <span class="hl">Output</span>: 측정 결과 보고서 + 맞춤형 의자 추천 (B2B/B2C)
       </div>
     </div>
 
     <div class="section rev">
       <h2 class="section-h">Sample Output</h2>
       <div class="img-grid">
-        <div class="arch-box img-sm">
-          <span class="hl">Input</span>: 3장의 사진 (정면 / 측면 / 후면) + 의자 모델 정보 + 개인정보<br>
-              ↓<br>
-          <span class="hl2">VitPose</span>: SOTA Keypoint 추출 (측정 오차 최소화)<br>
-          <span class="hl2">Meshroom</span>: 3D Mesh Reconstruction (Reality 환경 구현)<br>
-              ↓<br>
-          <span class="hl">Image Alignment + Pose Transfer</span>: Skeleton Point + Mesh 정보 보정<br>
-              ↓<br>
-          <span class="hl2">신체 치수 계산</span>: 어깨너비, 좌판 깊이 등 인체공학적 수치 도출<br>
-              ↓<br>
-          <span class="hl">Output</span>: 측정 결과 보고서 + 맞춤형 의자 추천 (B2B/B2C)
+        <div class="img-placeholder img-sm" id="ph-output1">
+          <img src="/src/project/fiton/output1.png" alt="FIT:ON 출력 결과 1">
         </div>
-        <div class="img-placeholder img-sm" id="ph-report">
-          <img src="/src/project/fiton/fiton_report.png" alt="FIT:ON 측정 결과 보고서">
+        <div class="img-placeholder img-sm" id="ph-output2">
+          <img src="/src/project/fiton/output2.png" alt="FIT:ON 출력 결과 2">
         </div>
       </div>
     </div>
