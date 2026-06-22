@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5">
+<title>FIT:ON | 임연오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ===== THEME VARIABLES ===== */
+:root,[data-theme="dark"]{
+  --bg:#0b0f18;--bg2:#111827;--bg3:#1a2035;--card:#161c2d;
+  --acc:#f59e0b;--acc2:#7C3AED;--acc3:#f59e0b;
+  --txt:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --border:rgba(255,255,255,0.08);
+  --sh:0 4px 24px rgba(0,0,0,.4);
+  --sh-card:0 2px 12px rgba(0,0,0,.3);
+  --nav-bg:rgba(11,15,24,.92);
+  --hero-grid:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+  --scrollbar:#f59e0b;--r:16px;--r2:8px;--t:.3s cubic-bezier(.4,0,.2,1);--proj:#f59e0b;
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e2e8f0;--card:#ffffff;
+  --acc:#d97706;--acc2:#6d28d9;--acc3:#d97706;
+  --txt:#1a202c;--muted:#4a5568;--dim:#718096;
+  --border:rgba(0,0,0,0.09);
+  --sh:0 4px 24px rgba(0,0,0,.1);
+  --sh-card:0 2px 12px rgba(0,0,0,.08);
+  --nav-bg:rgba(240,244,248,.92);
+  --hero-grid:radial-gradient(rgba(0,0,0,.07) 1px,transparent 1px);
+  --scrollbar:#d97706;--r:16px;--r2:8px;--t:.3s cubic-bezier(.4,0,.2,1);--proj:#d97706;
+}
+
+
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--proj);border-radius:3px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-weight:700;line-height:1.2}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;font-weight:600;transition:var(--t)}
+.back-btn:hover{color:var(--proj)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.back-btn svg{transition:transform var(--t)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--proj)}
+.nav-logo span{color:var(--txt)}
+.proj-nav{display:flex;gap:8px}
+.pnav-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:100px;transition:var(--t)}
+.pnav-btn:hover{border-color:var(--proj);color:var(--proj)}
+.proj-hero{padding:110px 0 60px;position:relative;overflow:hidden}
+.proj-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(124,58,237,.12),transparent 70%)}
+.proj-hero-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at center,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);margin-bottom:20px}
+.breadcrumb a{color:var(--proj);font-weight:600}
+.breadcrumb a:hover{text-decoration:underline}
+.proj-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pbadge{padding:4px 14px;border-radius:100px;font-size:.76rem;font-weight:700;border:1px solid}
+.pbadge-cat{background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:#a78bfa}
+.pbadge-award{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:var(--acc3)}
+.proj-h1{font-size:clamp(2.4rem,6vw,4rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.proj-h1 span{color:var(--proj)}
+.proj-subtitle{font-size:1.05rem;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:36px}
+.meta-strip{display:flex;gap:24px;flex-wrap:wrap;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--r)}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.meta-val{font-size:.9rem;font-weight:600}
+.proj-content{padding:60px 0 100px}
+.section{margin-bottom:56px}
+.section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
+.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--card);border:2px dashed rgba(124,58,237,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+.img-placeholder:hover{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.04)}
+.img-placeholder svg{color:var(--proj);opacity:.5}
+.img-placeholder .hint{font-size:.75rem;color:var(--dim);margin-top:4px}
+.img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.img-sm{aspect-ratio:4/3}
+.abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
+.abstract-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem}
+.abstract-card p:last-child{margin-bottom:0}
+.abstract-card strong{color:#a78bfa}
+.bullet-list{display:flex;flex-direction:column;gap:12px}
+.bullet-item{display:flex;gap:14px;align-items:flex-start}
+.bullet-num{width:26px;height:26px;border-radius:50%;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:#a78bfa;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.bullet-text{font-size:.93rem;color:var(--muted);line-height:1.75}
+.bullet-text strong{color:var(--txt)}
+.tech-grid{display:flex;flex-wrap:wrap;gap:10px}
+.tech-chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.85rem;font-weight:700;transition:var(--t)}
+.tech-chip:hover{border-color:rgba(124,58,237,.3);color:#a78bfa}
+
+/* 디자인씽킹 프로세스 */
+.dt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:var(--t)}
+.dt-card:hover{border-color:rgba(124,58,237,.3);transform:translateY(-3px)}
+.dt-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#a78bfa;font-weight:700;margin-bottom:6px}
+.dt-title{font-size:.9rem;font-weight:800;margin-bottom:8px}
+.dt-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+
+.arch-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--muted);line-height:2;overflow-x:auto}
+.arch-box .hl{color:#a78bfa}
+.arch-box .hl2{color:var(--acc2)}
+.impression-card{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(245,158,11,.06));border:1px solid rgba(124,58,237,.15);border-radius:var(--r);padding:28px;position:relative}
+.impression-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem;position:relative;z-index:1}
+.impression-card p:last-child{margin-bottom:0}
+.impression-card strong{color:var(--txt)}
+.proj-footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border)}
+.pfnav{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;transition:var(--t);display:flex;flex-direction:column;gap:4px}
+.pfnav:hover{border-color:rgba(124,58,237,.3);transform:translateY(-2px)}
+.pfnav-dir{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.pfnav-title{font-size:.95rem;font-weight:700;color:var(--txt)}
+.pfnav-sub{font-size:.8rem;color:var(--muted)}
+.pfnav.next{text-align:right}
+.pfnav.next .pfnav-dir{justify-content:flex-end}
+.rev{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.rev.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.06s}.d2{transition-delay:.12s}
+@media(max-width:640px){
+  .dt-grid{grid-template-columns:1fr}
+  .img-grid{grid-template-columns:1fr}
+  .proj-footer-nav{grid-template-columns:1fr}
+  .meta-strip{flex-direction:column;gap:16px}
+}
+.theme-btn{width:36px;height:22px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .35s,border .35s;flex-shrink:0}
+.theme-thumb{width:16px;height:16px;border-radius:50%;background:var(--proj);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+[data-theme="light"] .theme-thumb{transform:translateX(14px)}
+</style>
+<script>(function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="back-btn">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      포트폴리오로 돌아가기
+    </a>
+    <div class="nav-logo">임연오<span>.dev</span></div>
+    <div class="proj-nav">
+      <a href="swingnet.html" class="pnav-btn">← Prev</a>
+      <a href="recycling.html" class="pnav-btn">Next →</a>
+      <button class="theme-btn" id="themeToggle" title="테마 전환"><div class="theme-thumb" id="themeThumb">☀️</div></button>
+    </div>
+  </div>
+</nav>
+
+<div class="proj-hero">
+  <div class="proj-hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><span>Projects</span><span>/</span><span>FIT:ON</span>
+    </div>
+    <div class="proj-badge-row">
+      <span class="pbadge pbadge-cat">🪑 Computer Vision · Project Design</span>
+      <span class="pbadge pbadge-award">🥇 우수상 — 한국경제신문 아이디어경진대회</span>
+    </div>
+    <h1 class="proj-h1"><span>FIT:ON</span></h1>
+    <p class="proj-subtitle">이미지 기반 3D 복원을 통해 신체 수치를 정밀하게 측정하고, 개인 체형에 최적화된 인체공학 의자를 추천하는 AI 설계.</p>
+    <div class="meta-strip">
+      <div class="meta-item"><span class="meta-label">기간</span><span class="meta-val">2025.03.17 — 04.24 (6주)</span></div>
+      <div class="meta-item"><span class="meta-label">역할</span><span class="meta-val">기획 · 리서치 · 기술 검토</span></div>
+      <div class="meta-item"><span class="meta-label">팀 구성</span><span class="meta-val">7인 팀 (30% 기여)</span></div>
+      <div class="meta-item"><span class="meta-label">주관</span><span class="meta-val">고려대학교 지능정보SW아카데미</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="proj-content">
+  <div class="container">
+
+    <div class="section rev">
+      <div class="img-placeholder" id="ph-main">
+        <img src="src/project/fiton/fiton_pipeline.png" alt="FIT:ON 시스템 파이프라인">
+      </div>
+    </div>
+
+    <div class="section rev d1">
+      <h2 class="section-h">Overview</h2>
+      <div class="abstract-card">
+        <p><strong>'인체공학'</strong>은 인간의 몸을 계산하여 설계되었지만, 평균의 함정이라는 한계가 존재합니다. 사람마다 체형이 달라 동일한 의자도 불편함이 다르다는 페인포인트를 포착했습니다.</p>
+        <p>FIT:ON은 <strong>'개인에 맞춘 진짜 인체공학'</strong> 가치를 재정의했습니다. 3장의 사진만으로 3D Mesh Reconstruction과 HPE를 결합하여 신체 수치를 정밀 측정하고, 측정 결과 보고서와 맞춤형 의자를 추천하는 시스템입니다.</p>
+      </div>
+    </div>
+
+    <!-- 디자인씽킹 프로세스 -->
+    <div class="section rev">
+      <h2 class="section-h">Design Thinking Process</h2>
+      <div class="dt-grid">
+        <div class="dt-card">
+          <div class="dt-num">STEP 01</div>
+          <div class="dt-title">🫶 공감</div>
+          <div class="dt-desc">체형 분석 서비스를 통해 어떤 가치를 제공할 수 있을까? 사용자 불편 경험 리서치</div>
+        </div>
+        <div class="dt-card">
+          <div class="dt-num">STEP 02</div>
+          <div class="dt-title">🎯 문제 정의</div>
+          <div class="dt-desc">인체공학의 '평균의 함정' 한계 도출. 개인 체형별 구매 불만족 경험 정의</div>
+        </div>
+        <div class="dt-card">
+          <div class="dt-num">STEP 03</div>
+          <div class="dt-title">💡 아이디어</div>
+          <div class="dt-desc">'개인에 맞춘 진짜 인체공학' 가치 재정의 → 의자 추천 + 측정 결과 보고서 제공</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Role & Work</h2>
+      <div class="bullet-list">
+        <div class="bullet-item">
+          <span class="bullet-num">1</span>
+          <span class="bullet-text"><strong>아키텍처 설계 보조 / 파이프라인 검토</strong> — VitPose(SOTA)로 측정 오차 최소화, 3D Mesh Reconstruction으로 Reality 환경 구현, Skeleton Point + Mesh 보정으로 정확한 측정값 도출</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">2</span>
+          <span class="bullet-text"><strong>기술 조사</strong> — HPE(Human Pose Estimation) 기술 리서치, 학습 데이터셋 및 SOTA 모델 탐색</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">3</span>
+          <span class="bullet-text"><strong>개발자-기획자 소통 브릿지</strong> — 기획 담당에게 딥러닝·이미지 처리 과정과 한계를 알기 쉽게 설명하여 컨셉 오차 최소화</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">4</span>
+          <span class="bullet-text"><strong>리서치</strong> — 국내외 선행 연구·특허·법적 용어 조사, B2B/B2C로서 비즈니스 확장 가능성 확인</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#3776AB" stroke-width="2"/><path d="M12 6v12M6 12h12" stroke="#FFD43B" stroke-width="1.5" stroke-linecap="round"/></svg> Python</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L18 9V19L12 22L6 19V9Z" stroke="#FF6B6B" stroke-width="2" fill="#FF6B6B" opacity="0.7"/></svg> VitPose</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M4 12H20M4 18H20" stroke="#4E6C9E" stroke-width="2" stroke-linecap="round"/></svg> Meshroom</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L22 7V17L12 22L2 17V7Z" stroke="#6366F1" stroke-width="2" fill="none"/></svg> 3D Reconstruction</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L18 8V16L12 20L6 16V8Z" stroke="#FFD700" stroke-width="2" fill="#FFD700" opacity="0.6"/></svg> MediaPipe</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="1.5" fill="#FF6B6B"/><circle cx="12" cy="12" r="1.5" fill="#FF6B6B"/><circle cx="16" cy="16" r="1.5" fill="#FF6B6B"/><path d="M8 8L12 12L16 16" stroke="#FF6B6B" stroke-width="1.5"/></svg> Skeleton Point</div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">System Architecture</h2>
+      <div class="arch-box">
+        <span class="hl">Input</span>: 3장의 사진 (정면 / 측면 / 후면) + 의자 모델 정보 + 개인정보<br>
+            ↓<br>
+        <span class="hl2">VitPose</span>: SOTA Keypoint 추출 (측정 오차 최소화)<br>
+        <span class="hl2">Meshroom</span>: 3D Mesh Reconstruction (Reality 환경 구현)<br>
+            ↓<br>
+        <span class="hl">Image Alignment + Pose Transfer</span>: Skeleton Point + Mesh 정보 보정<br>
+            ↓<br>
+        <span class="hl2">신체 치수 계산</span>: 어깨너비, 좌판 깊이 등 인체공학적 수치 도출<br>
+            ↓<br>
+        <span class="hl">Output</span>: 측정 결과 보고서 + 맞춤형 의자 추천 (B2B/B2C)
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Sample Output</h2>
+      <div class="img-grid">
+        <div class="img-placeholder img-sm" id="ph-flow">
+          <img src="src/project/fiton/fiton_full_process.png" alt="FIT:ON 전체 프로세스">
+        </div>
+        <div class="img-placeholder img-sm" id="ph-report">
+          <img src="src/project/fiton/fiton_report.png" alt="FIT:ON 측정 결과 보고서">
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">배운 점 & 회고</h2>
+      <div class="impression-card">
+        <p>기술과 용어에 대한 배경지식이 모두 다르다는 사실을 처음엔 인지하지 못해 회의 시간이 길어졌습니다. <strong>이해가 안 되는 부분은 적극적으로 소통하여 컨셉에 대한 오차를 줄여야 한다</strong>는 것을 몸으로 배웠습니다.</p>
+        <p><strong>기술로서 제공할 수 있는 가치를 찾으면 비즈니스가 된다</strong>는 것을 체감한 프로젝트입니다. 단순한 기술 구현을 넘어, B2B/B2C 확장 가능성까지 고려하는 시야를 갖게 되었습니다.</p>
+      </div>
+    </div>
+
+    <div class="proj-footer-nav rev">
+      <a href="swingnet.html" class="pfnav">
+        <span class="pfnav-dir">← Previous Project</span>
+        <span class="pfnav-title">Swing Net V2</span>
+        <span class="pfnav-sub">골프 동작 탐지 E2E AI 모델</span>
+      </a>
+      <a href="recycling.html" class="pfnav next">
+        <span class="pfnav-dir">Next Project →</span>
+        <span class="pfnav-title">AI 자동 분리수거 시스템</span>
+        <span class="pfnav-sub">캔·플라스틱·유리 분류 로봇</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// theme toggle
+(function(){
+  var h=document.documentElement;
+  var btn=document.getElementById('themeToggle');
+  var thumb=document.getElementById('themeThumb');
+  function upd(t){thumb.textContent=t==='dark'?'🌙':'☀️';}
+  upd(h.getAttribute('data-theme'));
+  btn.addEventListener('click',function(){
+    var nt=h.getAttribute('data-theme')==='dark'?'light':'dark';
+    h.setAttribute('data-theme',nt);
+    localStorage.setItem('theme',nt);
+    upd(nt);
+  });
+})();
+function loadImg(input, id) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ph = document.getElementById(id);
+    let img = ph.querySelector('img');
+    if (!img) { img = document.createElement('img'); ph.appendChild(img); }
+    img.src = e.target.result;
+    ph.querySelector('svg').style.display = 'none';
+    ph.querySelectorAll('span').forEach(s => s.style.display = 'none');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }});
+}, { threshold: .08 });
+document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

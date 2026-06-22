@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5">
+<title>AI 자동 분리수거 | 임연오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="dark"]{
+  --bg:#0b0f18;--bg2:#111827;--card:#161c2d;
+  --acc:#f59e0b;--acc2:#4ECDC4;--acc3:#f59e0b;
+  --txt:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --border:rgba(255,255,255,0.08);--r:16px;--r2:8px;
+  --t:.3s cubic-bezier(.4,0,.2,1);--proj:#f59e0b;
+  --nav-bg:rgba(11,15,24,.92)
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg2:#ffffff;--card:#ffffff;
+  --acc:#d97706;--acc2:#0ea5a0;--acc3:#d97706;
+  --txt:#1a202c;--muted:#4a5568;--dim:#718096;
+  --border:rgba(0,0,0,0.09);--r:16px;--r2:8px;
+  --t:.3s cubic-bezier(.4,0,.2,1);--proj:#d97706;
+  --nav-bg:rgba(240,244,248,.92)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--proj);border-radius:3px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3{font-weight:700;line-height:1.2}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s}
+.nav-inner{max-width:900px;margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;font-weight:600;transition:var(--t)}
+.back-btn:hover{color:var(--proj)}
+.back-btn svg{transition:transform var(--t)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--proj)}
+.nav-logo span{color:var(--txt)}
+.proj-nav{display:flex;gap:8px}
+.pnav-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:100px;transition:var(--t)}
+.pnav-btn:hover{border-color:var(--proj);color:var(--proj)}
+.theme-btn{width:36px;height:22px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .35s,border .35s;flex-shrink:0}
+.theme-thumb{width:16px;height:16px;border-radius:50%;background:var(--proj);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+[data-theme="light"] .theme-thumb{transform:translateX(14px)}
+.proj-hero{padding:110px 0 60px;position:relative;overflow:hidden}
+.proj-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(245,158,11,.1),transparent 70%)}
+.proj-hero-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at center,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);margin-bottom:20px}
+.breadcrumb a{color:var(--proj);font-weight:600}
+.proj-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pbadge{padding:4px 14px;border-radius:100px;font-size:.76rem;font-weight:700;border:1px solid}
+.pbadge-cat{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--proj)}
+.proj-h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.proj-h1 span{color:var(--proj)}
+.proj-subtitle{font-size:1.05rem;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:36px}
+.meta-strip{display:flex;gap:24px;flex-wrap:wrap;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--r)}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.meta-val{font-size:.9rem;font-weight:600}
+.proj-content{padding:60px 0 100px}
+.section{margin-bottom:56px}
+.section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
+.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--card);border:2px dashed rgba(245,158,11,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+.img-placeholder:hover{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.04)}
+.img-placeholder svg{color:var(--proj);opacity:.5}
+.img-placeholder .hint{font-size:.75rem;color:var(--dim);margin-top:4px}
+.img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.img-sm{aspect-ratio:4/3}
+.abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
+.abstract-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem}
+.abstract-card p:last-child{margin-bottom:0}
+.abstract-card strong{color:var(--proj)}
+.bullet-list{display:flex;flex-direction:column;gap:12px}
+.bullet-item{display:flex;gap:14px;align-items:flex-start}
+.bullet-num{width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--proj);flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.bullet-text{font-size:.93rem;color:var(--muted);line-height:1.75}
+.bullet-text strong{color:var(--txt)}
+
+/* 분류 카드 */
+.classify-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cls-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;transition:var(--t)}
+.cls-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-3px)}
+.cls-icon{font-size:2.2rem;margin-bottom:10px}
+.cls-name{font-size:1rem;font-weight:800;margin-bottom:6px}
+.cls-desc{font-size:.8rem;color:var(--muted);line-height:1.5}
+
+.tech-grid{display:flex;flex-wrap:wrap;gap:10px}
+.tech-chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.85rem;font-weight:700;transition:var(--t)}
+.tech-chip:hover{border-color:rgba(245,158,11,.3);color:var(--proj)}
+.arch-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--muted);line-height:2;overflow-x:auto}
+.arch-box .hl{color:var(--proj)}
+.arch-box .hl2{color:#60a5fa}
+.impression-card{background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(78,205,196,.06));border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:28px;position:relative}
+.impression-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem;position:relative;z-index:1}
+.impression-card p:last-child{margin-bottom:0}
+.impression-card strong{color:var(--txt)}
+.proj-footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border)}
+.pfnav{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;transition:var(--t);display:flex;flex-direction:column;gap:4px}
+.pfnav:hover{border-color:rgba(245,158,11,.3);transform:translateY(-2px)}
+.pfnav-dir{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.pfnav-title{font-size:.95rem;font-weight:700}
+.pfnav-sub{font-size:.8rem;color:var(--muted)}
+.pfnav.next{text-align:right}
+.pfnav.next .pfnav-dir{justify-content:flex-end}
+.rev{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.rev.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.06s}
+@media(max-width:640px){
+  .classify-grid{grid-template-columns:1fr}
+  .img-grid{grid-template-columns:1fr}
+  .proj-footer-nav{grid-template-columns:1fr}
+  .meta-strip{flex-direction:column;gap:16px}
+}
+</style>
+<script>(function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="back-btn">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      포트폴리오로 돌아가기
+    </a>
+    <div class="nav-logo">임연오<span>.dev</span></div>
+    <div class="proj-nav">
+      <a href="fiton.html" class="pnav-btn">← Prev</a>
+      <a href="trash-analysis.html" class="pnav-btn">Next →</a>
+      <button class="theme-btn" id="themeToggle" title="테마 전환"><div class="theme-thumb" id="themeThumb">☀️</div></button>
+    </div>
+  </div>
+</nav>
+
+<div class="proj-hero">
+  <div class="proj-hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><span>Projects</span><span>/</span><span>AI 자동 분리수거</span>
+    </div>
+    <div class="proj-badge-row">
+      <span class="pbadge pbadge-cat">♻️ Vision AI · IoT · Robotics</span>
+    </div>
+    <h1 class="proj-h1">AI <span>자동 분리수거</span> 시스템</h1>
+    <p class="proj-subtitle">캔·플라스틱·유리를 영상처리로 실시간 감지하고 하드웨어를 자동 제어하는 Vision AI 기반 분리수거 로봇. 소프트웨어부터 3D 프린팅 하드웨어까지 직접 제작.</p>
+    <div class="meta-strip">
+      <div class="meta-item"><span class="meta-label">기간</span><span class="meta-val">2023.03.13 — 06.18 (12주)</span></div>
+      <div class="meta-item"><span class="meta-label">역할</span><span class="meta-val">HW 부품 제작</span></div>
+      <div class="meta-item"><span class="meta-label">팀 구성</span><span class="meta-val">3인 팀 (40% 기여)</span></div>
+      <div class="meta-item"><span class="meta-label">주관</span><span class="meta-val">전자공학과 캡스턴 디자인</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="proj-content">
+  <div class="container">
+
+    <div class="section rev">
+      <div class="img-placeholder" id="ph-main" onclick="document.getElementById('fi-main').click()">
+        <input type="file" id="fi-main" accept="image/*" onchange="loadImg(this,'ph-main')">
+        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>완성된 분리수거 로봇 사진 업로드</span>
+        <span class="hint">클릭하여 파일 선택</span>
+      </div>
+    </div>
+
+    <div class="section rev d1">
+      <h2 class="section-h">Overview</h2>
+      <div class="abstract-card">
+        <p>교내에 관리되지 않는 쓰레기통에 <strong>저비용 자동화 장치</strong>를 도입하여 자원 순환의 효율을 극대화하는 AX 전환을 목표로 했습니다.</p>
+        <p>Google Teachable Machine으로 binary tree 방식 분류 모델을 학습하고, Serial 통신으로 Arduino를 제어합니다. <strong>소프트웨어 분류부터 3D 프린팅 하드웨어까지</strong> 전 과정을 팀이 직접 설계·제작했습니다.</p>
+      </div>
+    </div>
+
+    <!-- 분류 카테고리 -->
+    <div class="section rev">
+      <h2 class="section-h">분류 카테고리</h2>
+      <div class="classify-grid">
+        <div class="cls-card">
+          <div class="cls-icon">🥤</div>
+          <div class="cls-name">CAN</div>
+          <div class="cls-desc">알루미늄 캔류<br>금속 반사 특성 기반 인식</div>
+        </div>
+        <div class="cls-card">
+          <div class="cls-icon">🧴</div>
+          <div class="cls-name">PLASTIC</div>
+          <div class="cls-desc">플라스틱 용기류<br>투명/불투명 모두 처리</div>
+        </div>
+        <div class="cls-card">
+          <div class="cls-icon">🫙</div>
+          <div class="cls-name">GLASS</div>
+          <div class="cls-desc">유리 용기류<br>조도 보정 후 인식</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Role & Work</h2>
+      <div class="bullet-list">
+        <div class="bullet-item">
+          <span class="bullet-num">1</span>
+          <span class="bullet-text"><strong>분류 날개 부품 3D 모델링 및 프린팅</strong> — 하중을 줄이기 위해 뒷부분에 원형 막대 연결, 서보모터 날개 안정적 회전 설계, infill 값 최적화로 경량·고강도 구현</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">2</span>
+          <span class="bullet-text"><strong>아크릴 외관 직접 재단 제작</strong> — 가로 90(30+30+30) × 세로 90 × 너비 27cm, 각 구획 30L 이상 수용 가능하도록 설계</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">3</span>
+          <span class="bullet-text"><strong>SW 담당과 하드웨어 연동 소통</strong> — Calibration을 위한 부품 설계, 회전각 등 최적 파라미터 협의 및 설정</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">4</span>
+          <span class="bullet-text"><strong>데이터 수집 최적화</strong> — 초기 수집 데이터로 학습 시 정확도 미흡 → 실제 촬영 환경에 최적화된 데이터 재수집으로 성능 개선</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#3776AB" stroke-width="2"/><path d="M12 6v12M6 12h12" stroke="#FFD43B" stroke-width="1.5" stroke-linecap="round"/></svg> Python</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="6" width="14" height="12" stroke="#00979D" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="2" fill="#00979D"/></svg> Arduino</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L20 7V17L12 22L4 17V7Z" stroke="#FFA500" stroke-width="2" fill="#FFA500" opacity="0.6"/></svg> Teachable Machine</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12L8 15L19 4" stroke="#0066CC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Serial 통신</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4L20 8V16L12 20L4 16V8Z" stroke="#A1887F" stroke-width="2" fill="none"/></svg> Rhinoceros</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5H19V19H5Z" stroke="#C60000" stroke-width="2" fill="none"/><path d="M5 5L19 19M19 5L5 19" stroke="#C60000" stroke-width="1.5"/></svg> AutoCAD</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 18V10L14 6V14M10 18H14M10 18L6 20M14 14H18M14 14L18 16" stroke="#00A4EF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 3D Printing</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3" stroke="#FF6B35" stroke-width="2" fill="#FF6B35" opacity="0.7"/><path d="M6 16C6 13.5 9 12 12 12C15 12 18 13.5 18 16" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/></svg> 적외선 센서</div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">System Architecture</h2>
+      <div class="arch-box">
+<span class="hl">Input</span>: 웹캠 영상 (Real-time)
+    ↓ 조도 부족 시 LED 자동 점등
+<span class="hl2">Google Teachable Machine</span>: Binary Tree 분류 (CAN / PLA / GLASS)
+    ↓
+<span class="hl">Serial 통신</span>: Classification 결과 → Arduino 전송
+    ↓
+<span class="hl2">Arduino + 서보모터</span>: 분류 날개 회전 제어
+    ↓
+<span class="hl">적외선 센서</span>: 적재 상태 감지 → 관리자 휴대폰 알림
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Demo</h2>
+      <div class="img-grid">
+        <div class="img-placeholder img-sm" id="ph-demo" onclick="document.getElementById('fi-demo').click()">
+          <input type="file" id="fi-demo" accept="image/*" onchange="loadImg(this,'ph-demo')">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span>Demo 사진</span>
+        </div>
+        <div class="img-placeholder img-sm" id="ph-model" onclick="document.getElementById('fi-model').click()">
+          <input type="file" id="fi-model" accept="image/*" onchange="loadImg(this,'ph-model')">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span>날개 분리대 3D 모델링</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">배운 점 & 회고</h2>
+      <div class="impression-card">
+        <p>물성을 고려한 전통적 분류 방식이 더욱 정확도가 높고 효율적임을 체감했습니다. <strong>혁신적인 기술보다 최적의 기술을 찾아야 한다</strong>는 '오컴의 면도날'을 되새기게 된 프로젝트입니다.</p>
+        <p>기술의 한계와 기능을 직시하고, <strong>비판적 사고를 하며 다양한 솔루션의 스펙트럼을 고려</strong>해야겠다고 다짐한 계기가 되었습니다.</p>
+      </div>
+    </div>
+
+    <div class="proj-footer-nav rev">
+      <a href="fiton.html" class="pfnav">
+        <span class="pfnav-dir">← Previous Project</span>
+        <span class="pfnav-title">FIT:ON</span>
+        <span class="pfnav-sub">신체치수 측정 맞춤형 의자 추천시스템</span>
+      </a>
+      <a href="trash-analysis.html" class="pfnav next">
+        <span class="pfnav-dir">Next Project →</span>
+        <span class="pfnav-title">쓰레기 무단투기 분석</span>
+        <span class="pfnav-sub">서울시 데이터 분석 & 시각화</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// theme toggle
+(function(){
+  var h=document.documentElement;
+  var btn=document.getElementById('themeToggle');
+  var thumb=document.getElementById('themeThumb');
+  function upd(t){thumb.textContent=t==='dark'?'🌙':'☀️';}
+  upd(h.getAttribute('data-theme'));
+  btn.addEventListener('click',function(){
+    var nt=h.getAttribute('data-theme')==='dark'?'light':'dark';
+    h.setAttribute('data-theme',nt);
+    localStorage.setItem('theme',nt);
+    upd(nt);
+  });
+})();
+function loadImg(input, id) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ph = document.getElementById(id);
+    let img = ph.querySelector('img');
+    if (!img) { img = document.createElement('img'); ph.appendChild(img); }
+    img.src = e.target.result;
+    ph.querySelector('svg').style.display='none';
+    ph.querySelectorAll('span').forEach(s=>s.style.display='none');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+const obs = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})
+},{threshold:.08});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

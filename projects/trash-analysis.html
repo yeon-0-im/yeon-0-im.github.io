@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5">
+<title>쓰레기 무단투기 분석 | 임연오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="dark"]{
+  --bg:#0b0f18;--bg2:#111827;--card:#161c2d;
+  --acc:#f59e0b;--acc2:#4ECDC4;--acc3:#7C3AED;
+  --txt:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --border:rgba(255,255,255,0.08);--r:16px;--r2:8px;
+  --t:.3s cubic-bezier(.4,0,.2,1);--proj:#f59e0b;
+  --nav-bg:rgba(11,15,24,.92)
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg2:#ffffff;--card:#ffffff;
+  --acc:#d97706;--acc2:#0ea5a0;--acc3:#6d28d9;
+  --txt:#1a202c;--muted:#4a5568;--dim:#718096;
+  --border:rgba(0,0,0,0.09);--r:16px;--r2:8px;
+  --t:.3s cubic-bezier(.4,0,.2,1);--proj:#d97706;
+  --nav-bg:rgba(240,244,248,.92)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--proj);border-radius:3px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3{font-weight:700;line-height:1.2}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s}
+.nav-inner{max-width:900px;margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;font-weight:600;transition:var(--t)}
+.back-btn:hover{color:var(--proj)}
+.back-btn svg{transition:transform var(--t)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--proj)}
+.nav-logo span{color:var(--txt)}
+.proj-nav{display:flex;gap:8px}
+.pnav-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:100px;transition:var(--t)}
+.pnav-btn:hover{border-color:var(--proj);color:var(--proj)}
+.theme-btn{width:36px;height:22px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .35s,border .35s;flex-shrink:0}
+.theme-thumb{width:16px;height:16px;border-radius:50%;background:var(--proj);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+[data-theme="light"] .theme-thumb{transform:translateX(14px)}
+.proj-hero{padding:110px 0 60px;position:relative;overflow:hidden}
+.proj-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(245,158,11,.1),transparent 70%)}
+.proj-hero-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at center,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);margin-bottom:20px}
+.breadcrumb a{color:var(--proj);font-weight:600}
+.proj-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pbadge{padding:4px 14px;border-radius:100px;font-size:.76rem;font-weight:700;border:1px solid}
+.pbadge-cat{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--proj)}
+.pbadge-award{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:var(--proj)}
+.proj-h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.proj-h1 span{color:var(--proj)}
+.proj-subtitle{font-size:1.05rem;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:36px}
+.meta-strip{display:flex;gap:24px;flex-wrap:wrap;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--r)}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.meta-val{font-size:.9rem;font-weight:600}
+.proj-content{padding:60px 0 100px}
+.section{margin-bottom:56px}
+.section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
+.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--card);border:2px dashed rgba(245,158,11,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+.img-placeholder:hover{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.04)}
+.img-placeholder svg{color:var(--proj);opacity:.5}
+.img-placeholder .hint{font-size:.75rem;color:var(--dim);margin-top:4px}
+.img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.img-sm{aspect-ratio:3/2}
+.abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
+.abstract-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem}
+.abstract-card p:last-child{margin-bottom:0}
+.abstract-card strong{color:var(--proj)}
+.bullet-list{display:flex;flex-direction:column;gap:12px}
+.bullet-item{display:flex;gap:14px;align-items:flex-start}
+.bullet-num{width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--proj);flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.bullet-text{font-size:.93rem;color:var(--muted);line-height:1.75}
+.bullet-text strong{color:var(--txt)}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;transition:var(--t)}
+.kpi-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-3px)}
+.kpi-val{font-size:1.1rem;font-weight:900;color:var(--proj);display:block;margin-bottom:4px;line-height:1.3}
+.kpi-label{font-size:.8rem;color:var(--muted);line-height:1.4}
+
+/* 인사이트 카드 */
+.insight-card{background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(124,58,237,.06));border:1px solid rgba(245,158,11,.2);border-radius:var(--r);padding:24px;display:flex;gap:16px;align-items:flex-start}
+.insight-ico{font-size:1.8rem;flex-shrink:0}
+.insight-title{font-size:.95rem;font-weight:800;margin-bottom:6px}
+.insight-desc{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+.tech-grid{display:flex;flex-wrap:wrap;gap:10px}
+.tech-chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.85rem;font-weight:700;transition:var(--t)}
+.tech-chip:hover{border-color:rgba(245,158,11,.3);color:var(--proj)}
+.impression-card{background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(78,205,196,.06));border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:28px;position:relative}
+.impression-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem;position:relative;z-index:1}
+.impression-card p:last-child{margin-bottom:0}
+.impression-card strong{color:var(--txt)}
+.proj-footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border)}
+.pfnav{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;transition:var(--t);display:flex;flex-direction:column;gap:4px}
+.pfnav:hover{border-color:rgba(245,158,11,.3);transform:translateY(-2px)}
+.pfnav-dir{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.pfnav-title{font-size:.95rem;font-weight:700}
+.pfnav-sub{font-size:.8rem;color:var(--muted)}
+.pfnav.next{text-align:right;opacity:.35;cursor:default;pointer-events:none}
+.pfnav.next .pfnav-dir{justify-content:flex-end}
+.rev{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.rev.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.06s}
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .img-grid-3{grid-template-columns:1fr}
+  .proj-footer-nav{grid-template-columns:1fr}
+  .meta-strip{flex-direction:column;gap:16px}
+}
+</style>
+<script>(function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="back-btn">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      포트폴리오로 돌아가기
+    </a>
+    <div class="nav-logo">임연오<span>.dev</span></div>
+    <div class="proj-nav">
+      <a href="recycling.html" class="pnav-btn">← Prev</a>
+      <span class="pnav-btn" style="opacity:.35;cursor:default">Next →</span>
+      <button class="theme-btn" id="themeToggle" title="테마 전환"><div class="theme-thumb" id="themeThumb">☀️</div></button>
+    </div>
+  </div>
+</nav>
+
+<div class="proj-hero">
+  <div class="proj-hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><span>Projects</span><span>/</span><span>쓰레기 무단투기 분석</span>
+    </div>
+    <div class="proj-badge-row">
+      <span class="pbadge pbadge-cat">📊 Data Analysis · Visualization</span>
+      <span class="pbadge pbadge-award">🥇 우수상 — 한국재정정보원</span>
+    </div>
+    <h1 class="proj-h1">쓰레기 <span>무단투기</span> 현황 분석</h1>
+    <p class="proj-subtitle">서울시 구단위 재정데이터 기반으로 생활쓰레기 무단투기 발생 환경을 분석하고, 위험 지역을 예측하는 복합지표를 개발한 데이터 분석 프로젝트.</p>
+    <div class="meta-strip">
+      <div class="meta-item"><span class="meta-label">기간</span><span class="meta-val">2025.07.30 — 08.08 (2주)</span></div>
+      <div class="meta-item"><span class="meta-label">역할</span><span class="meta-val">PM · 데이터 분석 · 시각화</span></div>
+      <div class="meta-item"><span class="meta-label">팀 구성</span><span class="meta-val">4인 팀 (30% 기여)</span></div>
+      <div class="meta-item"><span class="meta-label">주관</span><span class="meta-val">한국재정정보원 · CSLEE</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="proj-content">
+  <div class="container">
+
+    <div class="section rev">
+      <div class="img-placeholder" id="ph-main" onclick="document.getElementById('fi-main').click()">
+        <input type="file" id="fi-main" accept="image/*" onchange="loadImg(this,'ph-main')">
+        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>QGIS 공간분석 지도 / 키워드 시각화 업로드</span>
+        <span class="hint">클릭하여 파일 선택</span>
+      </div>
+    </div>
+
+    <div class="section rev d1">
+      <h2 class="section-h">Overview</h2>
+      <div class="abstract-card">
+        <p>자치구별 <strong>행정적·공간적 특징을 분석</strong>하여 무단투기 원인을 도출하고, 발생 위험 지역을 파악할 수 있는 복합 지표를 개발했습니다.</p>
+        <p>수치적 분석·정성적 분석·공간 데이터 분석을 결합하여 지속적인 현황 트래킹을 위한 <strong>표준화된 데이터 수집 체계의 필요성</strong>을 제언했습니다.</p>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="section rev">
+      <h2 class="section-h">Result & KPI</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-val">위험지역 복합지표 개발</span>
+          <span class="kpi-label">무단투기 발생 예측 가능</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">3가지 분석 기법</span>
+          <span class="kpi-label">수치 + 정성 + 공간 데이터</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">깨진 유리창 효과</span>
+          <span class="kpi-label">주위 환경 영향 경향성 확인</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Role & Work</h2>
+      <div class="bullet-list">
+        <div class="bullet-item">
+          <span class="bullet-num">1</span>
+          <span class="bullet-text"><strong>데이터 수집</strong> — 자치구 예산·집행률·신고/단속내역·CCTV/가로쓰레기통 설치 데이터 수집 및 통합</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">2</span>
+          <span class="bullet-text"><strong>데이터 통합 및 전처리</strong> — 피어슨 상관계수 기반 환경관리사업 예산·행정구역 특징·외국인 거주지역 상관관계 분석 (상관도 낮은 수준 → 변인통제 데이터 필요성 제언)</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">3</span>
+          <span class="bullet-text"><strong>키워드 분석 + QGIS 공간정보 맵핑</strong> — 무단투기 발생 장소 기준 키워드 분석, CCTV·가로쓰레기통 설치 좌표 반영 공간정보 시각화</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">4</span>
+          <span class="bullet-text"><strong>PM 역할</strong> — 4인 팀 일정 관리, 분석 방향성 설정, 최종 발표 자료 구성 및 제언 도출</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 핵심 인사이트 -->
+    <div class="section rev">
+      <h2 class="section-h">핵심 인사이트</h2>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="insight-card">
+          <div class="insight-ico">🪟</div>
+          <div>
+            <div class="insight-title">깨진 유리창 효과</div>
+            <div class="insight-desc">주위 환경이 무단투기 발생에 영향을 끼치는 경향성 확인. 관리되지 않은 환경이 추가 투기를 유발하는 심리적 메커니즘을 데이터로 검증.</div>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-ico">📍</div>
+          <div>
+            <div class="insight-title">공간 데이터의 힘</div>
+            <div class="insight-desc">QGIS 공간정보 맵핑을 통해 단순 통계로는 보이지 않던 지역별 패턴과 위험 지역 클러스터를 시각적으로 도출.</div>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-ico">📋</div>
+          <div>
+            <div class="insight-title">표준화 데이터의 필요성</div>
+            <div class="insight-desc">수집 데이터로 설명 불가능한 복합 원인 존재. 지속적인 현황 트래킹을 위해 표준화된 데이터 수집 체계 구축이 선행되어야 함을 제언.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#3776AB" stroke-width="2"/><path d="M12 6v12M6 12h12" stroke="#FFD43B" stroke-width="1.5" stroke-linecap="round"/></svg> Python</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L18 7V17L12 21L6 17V7Z" stroke="#589632" stroke-width="2" fill="#589632" opacity="0.7"/></svg> QGIS</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6V18H18V6H6Z" stroke="#013243" stroke-width="2" fill="none"/><path d="M9 9H15M9 13H15" stroke="#013243" stroke-width="1.5" stroke-linecap="round"/></svg> NumPy</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 8L12 4L18 8V16L12 20L6 16Z" stroke="#150458" stroke-width="2" fill="#150458" opacity="0.6"/></svg> pandas</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12L12 6L18 12L12 18Z" fill="none" stroke="#4338CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 피어슨 상관계수</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z" stroke="#06B6D4" stroke-width="2" fill="none"/><path d="M12 6L15 12L12 18L9 12Z" fill="#06B6D4" opacity="0.5"/></svg> 키워드 분석</div>
+        <div class="tech-chip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="#10B981" stroke-width="2" fill="none"/><path d="M12 7V12L16 15" stroke="#10B981" stroke-width="2" stroke-linecap="round"/></svg> 공간정보 맵핑</div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">Result Visualizations</h2>
+      <div class="img-grid-3">
+        <div class="img-placeholder img-sm" id="ph-kw" onclick="document.getElementById('fi-kw').click()">
+          <input type="file" id="fi-kw" accept="image/*" onchange="loadImg(this,'ph-kw')">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span style="font-size:.78rem">키워드 워드클라우드</span>
+        </div>
+        <div class="img-placeholder img-sm" id="ph-map1" onclick="document.getElementById('fi-map1').click()">
+          <input type="file" id="fi-map1" accept="image/*" onchange="loadImg(this,'ph-map1')">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span style="font-size:.78rem">QGIS CCTV 맵핑</span>
+        </div>
+        <div class="img-placeholder img-sm" id="ph-map2" onclick="document.getElementById('fi-map2').click()">
+          <input type="file" id="fi-map2" accept="image/*" onchange="loadImg(this,'ph-map2')">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span style="font-size:.78rem">자치구별 공간 분석</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section rev">
+      <h2 class="section-h">배운 점 & 회고</h2>
+      <div class="impression-card">
+        <p>분석 범위를 좁혀서 가설을 세웠다면 더 명확한 결론이 나왔을 것입니다. <strong>사회현상에 대한 실험과 이론들을 눈여겨 보고 현실에 적용해보는 것이 도움</strong>이 된다는 것을 배웠습니다.</p>
+        <p>시각화를 통해 경향성을 알아낼 수 있다는 데이터 분석의 강점을 다시 확인했습니다. 수집한 데이터로 설명 불가능한 복합 원인이 존재할 때 <strong>어떻게 가설을 좁히고 변인을 통제해야 하는지</strong>에 대한 인사이트를 얻었습니다.</p>
+      </div>
+    </div>
+
+    <div class="proj-footer-nav rev">
+      <a href="recycling.html" class="pfnav">
+        <span class="pfnav-dir">← Previous Project</span>
+        <span class="pfnav-title">AI 자동 분리수거 시스템</span>
+        <span class="pfnav-sub">캔·플라스틱·유리 분류 로봇</span>
+      </a>
+      <div class="pfnav next">
+        <span class="pfnav-dir">Next Project →</span>
+        <span class="pfnav-title">마지막 프로젝트</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// theme toggle
+(function(){
+  var h=document.documentElement;
+  var btn=document.getElementById('themeToggle');
+  var thumb=document.getElementById('themeThumb');
+  function upd(t){thumb.textContent=t==='dark'?'🌙':'☀️';}
+  upd(h.getAttribute('data-theme'));
+  btn.addEventListener('click',function(){
+    var nt=h.getAttribute('data-theme')==='dark'?'light':'dark';
+    h.setAttribute('data-theme',nt);
+    localStorage.setItem('theme',nt);
+    upd(nt);
+  });
+})();
+function loadImg(input, id) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ph = document.getElementById(id);
+    let img = ph.querySelector('img');
+    if (!img) { img = document.createElement('img'); ph.appendChild(img); }
+    img.src = e.target.result;
+    ph.querySelector('svg').style.display='none';
+    ph.querySelectorAll('span').forEach(s=>s.style.display='none');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+const obs = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})
+},{threshold:.08});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

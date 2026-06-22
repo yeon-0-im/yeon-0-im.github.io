@@ -57,8 +57,10 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--acc);transition:width .3s}
 .nav-links a:hover,.nav-links a.active{color:var(--acc)}
 .nav-links a:hover::after,.nav-links a.active::after{width:100%}
-.nav-cta{background:var(--acc)!important;color:var(--bg)!important;padding:7px 20px;border-radius:100px;font-weight:700!important}
+.nav-cta{background:var(--acc)!important;color:var(--bg)!important;padding:7px 20px;border-radius:100px;font-weight:700!important;position:relative;clip-path:inset(0 round 100px)}
+.nav-cta::before{content:'';position:absolute;top:0;left:-80%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-15deg);animation:navShine 2.6s ease-in-out infinite;pointer-events:none}
 .nav-cta::after{display:none!important}
+@keyframes navShine{0%,35%{left:-80%}65%,100%{left:130%}}
 .nav-right{display:flex;align-items:center;gap:12px}
 
 /* ===== THEME TOGGLE ===== */
@@ -105,7 +107,7 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 .soc{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:10px;color:var(--muted);transition:.3s;background:var(--card)}
 .soc:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-3px)}
 .hero-card{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:var(--sh-card);transition:background .35s,border .35s}
-.card-head{height:220px;background:#c0bfc4;border-bottom:1px solid var(--border);overflow:hidden;position:relative}
+.card-head{height:220px;background:#ffffff;border-bottom:1px solid var(--border);overflow:hidden;position:relative}
 .card-head img{width:100%;height:100%;object-fit:contain;display:block}
 .card-body{padding:20px}
 .stat-row{display:flex;gap:12px;margin-bottom:16px}
@@ -162,46 +164,61 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 .stag{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--acc);padding:4px 11px;border-radius:6px;font-size:.79rem;font-weight:700;transition:.3s;cursor:default}
 [data-theme="light"] .stag{background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.25)}
 .stag:hover{background:rgba(245,158,11,.18);transform:translateY(-2px)}
+.stag{display:inline-flex;align-items:center;gap:5px}
+.stag-ico{width:13px;height:13px;flex-shrink:0;display:block}
+.stag-ico-acc{filter:brightness(0) saturate(100%) invert(67%) sepia(76%) saturate(491%) hue-rotate(349deg) brightness(101%)}
+[data-theme="light"] .stag-ico-acc{filter:brightness(0) saturate(100%) invert(47%) sepia(92%) saturate(562%) hue-rotate(27deg) brightness(93%)}
+
+/* ===== SKILLS PHYSICS ===== */
+.skills-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:.8rem;font-weight:600;color:var(--muted)}
+.leg-dot{width:8px;height:8px;border-radius:70%;flex-shrink:0}
+.skills-physics-wrap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--card);cursor:grab;transition:background .35s,border .35s}
+.skills-physics-wrap:active{cursor:grabbing}
+#skills-canvas{display:block;width:100%;height:300px}
+.skills-reset{position:absolute;bottom:14px;right:14px;background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:100px;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'Pretendard',sans-serif;transition:.3s}
+.skills-reset:hover{border-color:var(--acc);color:var(--acc)}
 
 /* ===== PROJECTS ===== */
 #projects{background:var(--bg2);transition:background .35s}
 .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:48px}
-.proj-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:background .35s,border .35s,.3s cubic-bezier(.4,0,.2,1)}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:background .35s,border .35s,.3s cubic-bezier(.4,0,.2,1)}
 .proj-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.2)}
 [data-theme="light"] .proj-card:hover{box-shadow:0 20px 60px rgba(0,0,0,.12)}
-.proj-head{padding:26px;background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(124,58,237,.06));border-bottom:1px solid var(--border);position:relative}
-[data-theme="light"] .proj-head{background:linear-gradient(135deg,rgba(217,119,6,.05),rgba(109,40,217,.05))}
+
+/* 이미지 플레이스홀더 */
+.proj-thumb{height:160px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;transition:background .35s}
+.proj-thumb-inner{display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;user-select:none}
+.proj-thumb-ico{font-size:2rem}
+.proj-thumb-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
+
+/* 헤더 */
+.proj-head{padding:18px 22px 14px;position:relative}
 .award-badge{position:absolute;top:14px;right:14px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:var(--acc3);padding:3px 11px;border-radius:100px;font-size:.73rem;font-weight:800}
-.proj-emo{font-size:1.9rem;margin-bottom:10px}
-.proj-cat{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:6px}
-.proj-title{font-size:1.2rem;font-weight:800;margin-bottom:6px}
-.proj-sub{font-size:.85rem;color:var(--muted);line-height:1.6}
-.proj-body{padding:20px 22px}
-.pmeta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-.pmeta span{font-size:.8rem;color:var(--muted)}
-.ttech{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-.ttag{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--acc2);padding:3px 9px;border-radius:5px;font-size:.76rem;font-weight:700}
-[data-theme="light"] .ttag{background:rgba(109,40,217,.08);color:#6d28d9;border-color:rgba(109,40,217,.2)}
-.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.proj-cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc);margin-bottom:5px}
+.proj-title{font-size:1.18rem;font-weight:800;margin-bottom:5px}
+.proj-sub{font-size:.84rem;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.proj-chips{display:flex;gap:7px;flex-wrap:wrap}
+.proj-chip{font-size:.75rem;color:var(--muted);background:var(--bg3);padding:2px 9px;border-radius:100px;border:1px solid var(--border);transition:background .35s}
+
+/* 바디 */
+.proj-body{padding:16px 22px;flex:1;display:flex;flex-direction:column;gap:12px}
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap}
 .kpi{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);border-radius:8px;padding:8px 13px;font-size:.78rem}
 [data-theme="light"] .kpi{background:rgba(217,119,6,.07);border-color:rgba(217,119,6,.2)}
 .kpi-v{font-weight:900;color:var(--acc);display:block;font-family:'JetBrains Mono',monospace}
 .kpi-l{color:var(--dim)}
-.proj-details{max-height:0;overflow:hidden;transition:max-height .45s ease}
-.proj-details.open{max-height:600px}
-.proj-details ul{list-style:none;display:flex;flex-direction:column;gap:7px;padding:12px 0 4px;border-top:1px solid var(--border);margin-top:8px}
-.proj-details li{font-size:.83rem;color:var(--muted);padding-left:16px;position:relative;line-height:1.65}
-.proj-details li::before{content:'▸';position:absolute;left:0;color:var(--acc)}
+.proj-impact{display:flex;flex-direction:column;gap:6px}
+.proj-impact-item{font-size:.83rem;color:var(--muted);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.proj-impact-item::before{content:'▸';color:var(--acc);font-size:.75rem;flex-shrink:0;margin-top:2px}
+.ttech{display:flex;flex-wrap:wrap;gap:7px}
+.ttag{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--acc2);padding:3px 9px;border-radius:5px;font-size:.76rem;font-weight:700}
+[data-theme="light"] .ttag{background:rgba(109,40,217,.08);color:#6d28d9;border-color:rgba(109,40,217,.2)}
 
-/* "상세 보기" 링크 */
-.proj-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--acc);margin-top:10px;transition:.3s}
+/* 푸터 */
+.proj-foot{padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+.proj-link{display:inline-flex;align-items:center;gap:6px;font-size:.83rem;font-weight:700;color:var(--acc);transition:.3s}
 .proj-link:hover{gap:10px}
-
-.proj-actions{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:11px 22px}
-.proj-toggle{background:none;border:none;color:var(--muted);display:flex;align-items:center;gap:7px;font-size:.83rem;font-weight:600;cursor:pointer;transition:.3s;font-family:'Pretendard',sans-serif;padding:0}
-.proj-toggle:hover{color:var(--acc)}
-.ti{transition:transform .3s}
-.ti.r{transform:rotate(180deg)}
 
 /* ===== TIMELINE (horizontal interactive) ===== */
 #timeline{background:var(--bg);transition:background .35s}
@@ -215,7 +232,7 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 .tl-track{width:100%;padding:0 48px;position:relative;height:440px}
 .tl-zone{position:relative;height:100%;width:100%}
 .tl-line{position:absolute;top:50%;left:0;right:0;height:2px;background:var(--border);transform:translateY(-50%);border-radius:1px}
-.tl-active-hl{position:absolute;top:50%;height:7px;transform:translateY(-50%);background:var(--proj);border-radius:4px;width:0;left:0;box-shadow:0 0 14px rgba(245,158,11,.45);pointer-events:none;z-index:2}
+.tl-active-hl{position:absolute;top:50%;height:7px;transform:translateY(-50%);background:var(--acc);border-radius:4px;width:0;left:0;box-shadow:0 0 14px rgba(245,158,11,.45);pointer-events:none;z-index:2}
 .tl-yr-row{position:absolute;top:50%;left:0;right:0;height:0;pointer-events:none}
 .tl-yr-lbl{position:absolute;transform:translateX(-50%);top:16px;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--dim);font-weight:500;white-space:nowrap;transition:color .35s}
 .tl-yr-lbl::before{content:'';position:absolute;top:-16px;left:50%;width:1px;height:16px;background:rgba(245,158,11,.18);transform:translateX(-50%)}
@@ -230,7 +247,7 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 .tl-pop-ttl{font-size:.83rem;font-weight:800;margin-bottom:5px;line-height:1.35}
 .tl-pop-desc{font-size:.74rem;color:var(--muted);line-height:1.55}
 .tl-pop-tag{display:inline-block;font-size:.67rem;font-weight:700;padding:1px 8px;border-radius:100px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.22);color:var(--acc3);margin-top:6px}
-.tl-node.active .tl-dot{border-color:var(--proj)!important}
+.tl-node.active .tl-dot{border-color:var(--acc)!important}
 .tl-yr-lbl-dim{opacity:.4}
 .tl-node.tl-anchor-left .tl-pop{left:-8px}
 .tl-node.tl-anchor-left.tl-down .tl-pop{transform:translateY(-12px) scale(.93);transform-origin:left top}
@@ -315,15 +332,6 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
 @media(max-width:480px){section{padding:64px 0}}
 </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9QHG5S3TZ9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9QHG5S3TZ9');
-</script>
 <body>
 
 <!-- NAV -->
@@ -332,11 +340,12 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
     <div class="logo">임연오<span>.dev</span></div>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
+      <li><a href="persona.html">Persona</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="journey.html">Journey</a></li>
       <li><a href="activities.html">Activities</a></li>
-      <li><a href="#contact" class="nav-cta">Contact</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="hire.html" class="nav-cta">Hire</a></li>
     </ul>
     <div class="nav-right">
       <!-- THEME TOGGLE -->
@@ -355,9 +364,10 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
   <a href="#about" onclick="cm()">About</a>
   <a href="#skills" onclick="cm()">Skills</a>
   <a href="#projects" onclick="cm()">Projects</a>
-  <a href="journey.html" onclick="cm()">Journey</a>
+  <a href="persona.html" onclick="cm()">Persona</a>
   <a href="activities.html" onclick="cm()">Activities</a>
   <a href="#contact" onclick="cm()">Contact</a>
+  <a href="hire.html" onclick="cm()">Hire 🔥</a>
 </div>
 
 <!-- HERO -->
@@ -419,7 +429,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
         </div>
         <div class="sec-h4" style="margin-top:24px">학력</div>
         <div class="edu-cards">
-          <div class="edu-card"><h4>국립 인천대학교</h4><div class="dept">전자공학과 졸업</div><div class="dates">2019.03 — 2025.08</div></div>
+          <div class="edu-card"><h4>인천대학교</h4><div class="dept">전자공학과 졸업</div><div class="dates">2019.03 — 2025.08</div></div>
           <div class="edu-card"><h4>선린인터넷고등학교</h4><div class="dept">멀티미디어과 졸업</div><div class="dates">2015.02 — 2018.02</div></div>
         </div>
         <div class="sec-h4">자격증 &amp; 어학</div>
@@ -436,7 +446,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
       </div>
       <div class="rev-r">
         <div class="can-header">What I Can Do</div>
-        <p class="can-sub">AI 구현부터 기획·하드웨어까지,<br>서비스 전반에 걸친 다양한 업무 경험을 보유하고 있습니다.</p>
+        <p class="can-sub">AI 구현부터 기획·하드웨어까지,<br>서비스 전반에 걸친 다양한 프로젝트 경험이 있습니다.</p>
         <div class="can-list">
           <div class="can-item">
             <span class="can-ico">🧠</span>
@@ -444,15 +454,15 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
           </div>
           <div class="can-item">
             <span class="can-ico">⚡</span>
-            <div><div class="can-ttl">LLM 경량화 · 파인튜닝</div><div class="can-desc">LLM 양자화 · QLoRA 프로젝트 경험</div></div>
+            <div><div class="can-ttl">LLM 경량화 · 파인튜닝</div><div class="can-desc">LG EXAONE4 양자화 · QLoRA 프로젝트 경험</div></div>
           </div>
           <div class="can-item">
             <span class="can-ico">🔗</span>
-            <div><div class="can-ttl">LLM 파이프라인 구성</div><div class="can-desc">RAG · LangChain · LangGraph</div></div>
+            <div><div class="can-ttl">LLM 파이프라인</div><div class="can-desc">RAG · LangChain · LangGraph</div></div>
           </div>
           <div class="can-item">
             <span class="can-ico">🤖</span>
-            <div><div class="can-ttl">AI · Robot 서비스 기획</div><div class="can-desc">아이디어 발굴부터 구현 방향 설계까지</div></div>
+            <div><div class="can-ttl">AI · Robot 서비스 기획</div><div class="can-desc">디자인씽킹, 설문 설계, 서비스 시나리오 작성</div></div>
           </div>
           <div class="can-item">
             <span class="can-ico">📊</span>
@@ -478,10 +488,40 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
     <div class="sec-label rev">/ tech stack</div>
     <h2 class="sec-title rev">기술 스택<span>.</span></h2>
     <div class="skills-grid">
-      <div class="sk-cat rev d1"><div class="sk-ico">🧠</div><div class="sk-name">AI / Deep Learning</div><div class="sk-tags"><span class="stag">PyTorch</span><span class="stag">TensorFlow</span><span class="stag">Hugging Face</span><span class="stag">ComfyUI</span><span class="stag">Ollama</span><span class="stag">LMstudio</span></div></div>
-      <div class="sk-cat rev d2"><div class="sk-ico">👁️</div><div class="sk-name">Computer Vision</div><div class="sk-tags"><span class="stag">OpenCV</span><span class="stag">MediaPipe</span><span class="stag">CVAT</span><span class="stag">Albumentations</span><span class="stag">HPE</span></div></div>
-      <div class="sk-cat rev d3"><div class="sk-ico">📊</div><div class="sk-name">Data Analysis</div><div class="sk-tags"><span class="stag">Python</span><span class="stag">NumPy</span><span class="stag">pandas</span><span class="stag">QGIS</span><span class="stag">Matplotlib</span></div></div>
-      <div class="sk-cat rev d4"><div class="sk-ico">🔧</div><div class="sk-name">Hardware &amp; Tools</div><div class="sk-tags"><span class="stag">Arduino</span><span class="stag">Rhinoceros</span><span class="stag">AutoCAD</span><span class="stag">Google Cloud</span><span class="stag">Git</span><span class="stag">3D Printing</span></div></div>
+      <div class="sk-cat rev d1"><div class="sk-ico">🧠</div><div class="sk-name">AI / Deep Learning</div><div class="sk-tags">
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg">PyTorch</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg">TensorFlow</span>
+        <span class="stag"><img class="stag-ico stag-ico-acc" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/huggingface.svg">Hugging Face</span>
+        <span class="stag">ComfyUI</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/ollama.svg" style="filter:brightness(0) invert(0.55)">Ollama</span>
+        <span class="stag">LMstudio</span>
+      </div></div>
+      <div class="sk-cat rev d2"><div class="sk-ico">👁️</div><div class="sk-name">Computer Vision</div><div class="sk-tags">
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/opencv/opencv-original.svg">OpenCV</span>
+        <span class="stag"><img class="stag-ico stag-ico-acc" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/mediapipe.svg">MediaPipe</span>
+        <span class="stag">CVAT</span>
+        <span class="stag">Albumentations</span>
+        <span class="stag">HPE</span>
+      </div></div>
+      <div class="sk-cat rev d3"><div class="sk-ico">📊</div><div class="sk-name">Data Analysis</div><div class="sk-tags">
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg">Python</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg">NumPy</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pandas/pandas-original.svg">pandas</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/qgis.svg" style="filter:brightness(0) saturate(100%) invert(43%) sepia(50%) saturate(600%) hue-rotate(65deg) brightness(85%)">QGIS</span>
+        <span class="stag">Matplotlib</span>
+      </div></div>
+      <div class="sk-cat rev d4"><div class="sk-ico">🔧</div><div class="sk-name">Hardware &amp; Tools</div><div class="sk-tags">
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/arduino/arduino-original.svg">Arduino</span>
+        <span class="stag">Rhinoceros</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/autocad.svg" style="filter:brightness(0) saturate(100%) invert(15%) sepia(100%) saturate(2000%) hue-rotate(349deg) brightness(95%)">AutoCAD</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg">Google Cloud</span>
+        <span class="stag"><img class="stag-ico" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg">Git</span>
+        <span class="stag">3D Printing</span>
+      </div></div>
+    </div>
+    <div class="skills-physics-wrap rev" style="margin-top:24px">
+      <canvas id="skills-canvas"></canvas>
+      <button class="skills-reset" id="skillsReset">↺</button>
     </div>
   </div>
 </section>
@@ -493,99 +533,124 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
     <h2 class="sec-title rev">프로젝트<span>.</span></h2>
     <div class="proj-grid">
 
+      <!-- Swing Net V2 -->
       <div class="proj-card rev d1">
+        <div class="proj-thumb">
+          <div class="proj-thumb-inner">
+            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-label">이미지 준비 중</span>
+          </div>
+        </div>
         <div class="proj-head">
           <div class="award-badge">🏅 장려상</div>
-          <div class="proj-emo">⛳</div>
-          <div class="proj-cat">Vision AI</div>
+          <div class="proj-cat">Vision AI · 모델 성능 최적화</div>
           <h3 class="proj-title">Swing Net V2</h3>
-          <p class="proj-sub">골프 동작 탐지 E2E AI 모델 · 스윙 중 8가지 자세 감지 &amp; Joint Angle 정량화</p>
+          <p class="proj-sub">골프 스윙 8단계 자세 감지 · Joint Angle 정량화 E2E 모델</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2025.04 — 06</span>
+            <span class="proj-chip">👥 3인 · 기여도 60%</span>
+          </div>
         </div>
         <div class="proj-body">
-          <div class="pmeta"><span>📅 2025.04 — 06 (8주)</span><span>👥 3인 팀 · 60%</span><span>🏛️ 고려대 지능정보SW아카데미</span></div>
-          <div class="ttech"><span class="ttag">PyTorch</span><span class="ttag">ConvLSTM</span><span class="ttag">MediaPipe</span><span class="ttag">OpenCV</span><span class="ttag">CVAT</span></div>
           <div class="kpi-row">
             <div class="kpi"><span class="kpi-v">0.43 → 0.47</span><span class="kpi-l">F1 Score</span></div>
             <div class="kpi"><span class="kpi-v">16%↓</span><span class="kpi-l">Latency</span></div>
+            <div class="kpi"><span class="kpi-v">CNN+LSTM → ConvLSTM</span><span class="kpi-l">구조 교체</span></div>
           </div>
-          <div class="proj-details" id="p1"><ul>
-            <li>CVPR Golf DB 논문 기반 CNN+LSTM → ConvLSTM 구조로 교체</li>
-            <li>데이터 EDA → 증강 → 전처리 → 학습 → 검증 → 평가 전 파이프라인 구현</li>
-            <li>다양한 BackBone 모델 실험 및 성능·경량화 Trade-off 분석</li>
-            <li>Pytorch.Profiler 활용 CPU/GPU 병목구간 개선</li>
-          </ul></div>
+          <div class="ttech"><span class="ttag">PyTorch</span><span class="ttag">ConvLSTM</span><span class="ttag">MediaPipe</span><span class="ttag">OpenCV</span><span class="ttag">CVAT</span></div>
         </div>
-        <div class="proj-actions">
-          <button class="proj-toggle" onclick="tp('p1',this)">자세히 보기 <span class="ti">▾</span></button>
-          <a href="projects/swingnet.html" class="proj-link">상세 페이지 →</a>
+        <div class="proj-foot">
+          <a href="projects/swingnet.html" class="proj-link">자세히 보기 →</a>
         </div>
       </div>
 
+      <!-- FIT:ON -->
       <div class="proj-card rev d2">
+        <div class="proj-thumb">
+          <div class="proj-thumb-inner">
+            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-label">이미지 준비 중</span>
+          </div>
+        </div>
         <div class="proj-head">
           <div class="award-badge">🥇 우수상</div>
-          <div class="proj-emo">🪑</div>
-          <div class="proj-cat">Computer Vision · Project Design</div>
+          <div class="proj-cat">Computer Vision · 기획</div>
           <h3 class="proj-title">FIT:ON</h3>
-          <p class="proj-sub">신체치수 측정 맞춤형 의자 추천시스템 · 이미지 기반 3D 복원</p>
+          <p class="proj-sub">신체치수 기반 맞춤형 의자 추천 · VitPose + 3D Mesh Reconstruction</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2025.03 — 04</span>
+            <span class="proj-chip">👥 7인 · 기여도 30%</span>
+          </div>
         </div>
         <div class="proj-body">
-          <div class="pmeta"><span>📅 2025.03 — 04 (6주)</span><span>👥 7인 팀 · 30%</span><span>🏛️ 고려대 지능정보SW아카데미</span></div>
+          <div class="proj-impact">
+            <div class="proj-impact-item">기획-개발 소통 브릿지 · 문제 정의 주도</div>
+            <div class="proj-impact-item">국내외 선행연구 · 특허 · 법적 용어 조사</div>
+          </div>
           <div class="ttech"><span class="ttag">VitPose</span><span class="ttag">Meshroom</span><span class="ttag">HPE</span><span class="ttag">3D Reconstruction</span></div>
-          <div class="proj-details" id="p2"><ul>
-            <li>SOTA 모델 VitPose로 Keypoint 추출, 측정 오차 최소화</li>
-            <li>3D Mesh Reconstruction + Skeleton Point 보정으로 정확한 신체 치수 도출</li>
-            <li>기획-개발 소통 브릿지 역할, 국내외 선행연구·특허·법적 용어 조사</li>
-          </ul></div>
         </div>
-        <div class="proj-actions">
-          <button class="proj-toggle" onclick="tp('p2',this)">자세히 보기 <span class="ti">▾</span></button>
-          <a href="projects/fiton.html" class="proj-link">상세 페이지 →</a>
+        <div class="proj-foot">
+          <a href="projects/fiton.html" class="proj-link">자세히 보기 →</a>
         </div>
       </div>
 
+      <!-- AI 자동 분리수거 -->
       <div class="proj-card rev d3">
+        <div class="proj-thumb">
+          <div class="proj-thumb-inner">
+            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-label">이미지 준비 중</span>
+          </div>
+        </div>
         <div class="proj-head">
-          <div class="proj-emo">♻️</div>
-          <div class="proj-cat">Vision AI · IoT · Robotics</div>
+          <div class="proj-cat">Vision AI · IoT · Hardware</div>
           <h3 class="proj-title">AI 자동 분리수거 시스템</h3>
-          <p class="proj-sub">캔·플라스틱·유리 분류 로봇 · Real-time Detecting &amp; 하드웨어 제어</p>
+          <p class="proj-sub">캔·플라스틱·유리 실시간 분류 로봇 · 3D 모델링부터 Arduino 제어까지</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2023.03 — 06</span>
+            <span class="proj-chip">👥 3인 · 기여도 40%</span>
+            <span class="proj-chip">캡스턴 디자인</span>
+          </div>
         </div>
         <div class="proj-body">
-          <div class="pmeta"><span>📅 2023.03 — 06 (12주)</span><span>👥 3인 팀 · 40%</span><span>🏛️ 전자공학과 캡스턴 디자인</span></div>
+          <div class="proj-impact">
+            <div class="proj-impact-item">분류 모델 학습 + Serial 통신 기반 Arduino 제어 구현</div>
+            <div class="proj-impact-item">날개 부품 3D 모델링·프린팅 · 아크릴 외관 직접 제작</div>
+          </div>
           <div class="ttech"><span class="ttag">Python</span><span class="ttag">Arduino</span><span class="ttag">Rhinoceros</span><span class="ttag">3D Printing</span></div>
-          <div class="proj-details" id="p3"><ul>
-            <li>binary tree 분류 모델 학습 및 Serial 통신 기반 하드웨어 제어 구현</li>
-            <li>Serial 통신으로 Classification 결과 → Arduino 하드웨어 제어</li>
-            <li>날개 부품 3D 모델링·프린팅 및 아크릴 외관 직접 재단 제작</li>
-          </ul></div>
         </div>
-        <div class="proj-actions">
-          <button class="proj-toggle" onclick="tp('p3',this)">자세히 보기 <span class="ti">▾</span></button>
-          <a href="projects/recycling.html" class="proj-link">상세 페이지 →</a>
+        <div class="proj-foot">
+          <a href="projects/recycling.html" class="proj-link">자세히 보기 →</a>
         </div>
       </div>
 
+      <!-- 쓰레기 무단투기 -->
       <div class="proj-card rev d4">
+        <div class="proj-thumb">
+          <div class="proj-thumb-inner">
+            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-label">이미지 준비 중</span>
+          </div>
+        </div>
         <div class="proj-head">
           <div class="award-badge">🥇 우수상</div>
-          <div class="proj-emo">📊</div>
           <div class="proj-cat">Data Analysis · Visualization</div>
           <h3 class="proj-title">쓰레기 무단투기 현황 분석</h3>
-          <p class="proj-sub">서울시 생활쓰레기 무단투기 발생환경 분석 및 제언</p>
+          <p class="proj-sub">서울시 생활쓰레기 무단투기 발생환경 분석 · '깨진 유리창 효과' 검증</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2025.07 — 08</span>
+            <span class="proj-chip">👥 4인 · PM</span>
+          </div>
         </div>
         <div class="proj-body">
-          <div class="pmeta"><span>📅 2025.07 — 08 (2주)</span><span>👥 4인 팀 · PM</span><span>🏛️ 한국재정정보원</span></div>
+          <div class="proj-impact">
+            <div class="proj-impact-item">피어슨 상관계수 기반 환경 변수 분석 주도</div>
+            <div class="proj-impact-item">QGIS 공간맵핑으로 무단투기 복합지표 지도 제작</div>
+          </div>
           <div class="ttech"><span class="ttag">Python</span><span class="ttag">QGIS</span><span class="ttag">NumPy</span><span class="ttag">피어슨 상관계수</span></div>
-          <div class="proj-details" id="p4"><ul>
-            <li>피어슨 상관계수 기반 환경관리사업·행정구역·외국인 거주지역 상관관계 분석</li>
-            <li>QGIS 공간정보 맵핑으로 무단투기 발생 위험지역 복합지표 개발</li>
-            <li>'깨진 유리창 효과' 검증: 주위 환경 영향 경향성 확인</li>
-          </ul></div>
         </div>
-        <div class="proj-actions">
-          <button class="proj-toggle" onclick="tp('p4',this)">자세히 보기 <span class="ti">▾</span></button>
-          <a href="projects/trash-analysis.html" class="proj-link">상세 페이지 →</a>
+        <div class="proj-foot">
+          <a href="projects/trash.html" class="proj-link">자세히 보기 →</a>
         </div>
       </div>
 
@@ -596,9 +661,9 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
 <!-- TIMELINE / JOURNEY -->
 <section id="timeline">
   <div class="container">
-    <div class="sec-label rev">/ journey</div>
-    <h2 class="sec-title rev">성장 여정<span>.</span></h2>
-    <p class="sec-sub rev">기초부터 AI 전문가를 향해, 꾸준히 성장해온 발자취입니다.</p>
+    <div class="sec-label rev">/ timeline</div>
+    <h2 class="sec-title rev">Long <span>Journey</span></h2>
+    <p class="sec-sub rev">시기별 활동 내용</p>
 
     <div class="tl-legend rev">
       <span class="tl-leg"><span class="tl-leg-arrow">▲</span> 직무 관련</span>
@@ -731,7 +796,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
     </div>
 
     <div style="text-align:center;margin-top:28px" class="rev">
-      <a href="journey.html" class="btn btn-g">성장 여정 자세히 보기 →</a>
+      <a href="persona.html" class="btn btn-g">Persona 더 보기 →</a>
     </div>
   </div>
 </section>
@@ -799,7 +864,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
               <span class="act-badge done">완료</span>
             </div>
             <div class="act-title-v2">AI 연구개발 직무 부트캠프</div>
-            <div class="act-org-tag">현직 멘토 특강 — 국립인천대학교</div>
+            <div class="act-org-tag">현직 멘토 특강 — 인천대학교</div>
           </div>
 
           <div class="act-item-v2">
@@ -808,7 +873,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
               <span class="act-badge done">완료</span>
             </div>
             <div class="act-title-v2">SW 소모임 — 공공데이터분석 프로젝트</div>
-            <div class="act-org-tag">국립인천대학교</div>
+            <div class="act-org-tag">인천대학교</div>
           </div>
 
           <div class="act-item-v2">
@@ -954,6 +1019,396 @@ function tp(id, btn) {
       hl.style.width=w+'%';
     });
   });
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+(function() {
+  if (typeof Matter === 'undefined') return;
+  var Engine     = Matter.Engine,     Bodies     = Matter.Bodies,
+      Body       = Matter.Body,       Composite  = Matter.Composite,
+      Composites = Matter.Composites, Mouse      = Matter.Mouse,
+      MouseConstraint = Matter.MouseConstraint,  Runner = Matter.Runner;
+
+  var canvas = document.getElementById('skills-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var TAGS = [
+    {text:'PyTorch',cat:0},{text:'TensorFlow',cat:0},{text:'Hugging Face',cat:0},
+    {text:'ComfyUI',cat:0},{text:'Ollama',cat:0},{text:'LMstudio',cat:0},
+    {text:'OpenCV',cat:1},{text:'MediaPipe',cat:1},{text:'CVAT',cat:1},
+    {text:'Albumentations',cat:1},{text:'HPE',cat:1},
+    {text:'Python',cat:2},{text:'NumPy',cat:2},{text:'pandas',cat:2},
+    {text:'QGIS',cat:2},{text:'Matplotlib',cat:2},
+    {text:'Arduino',cat:3},{text:'Rhinoceros',cat:3},{text:'AutoCAD',cat:3},
+    {text:'Google Cloud',cat:3},{text:'Git',cat:3},{text:'3D Printing',cat:3}
+  ];
+
+  var ICON_SLUGS = {
+    'PyTorch':'pytorch','TensorFlow':'tensorflow','Hugging Face':'huggingface',
+    'ComfyUI':null,'Ollama':'ollama','LMstudio':null,
+    'OpenCV':'opencv','MediaPipe':'mediapipe','CVAT':null,
+    'Albumentations':null,'HPE':null,
+    'Python':'python','NumPy':'numpy','pandas':'pandas',
+    'QGIS':'qgis','Matplotlib':null,
+    'Arduino':'arduino','Rhinoceros':null,'AutoCAD':'autocad',
+    'Google Cloud':'googlecloud','Git':'git','3D Printing':null
+  };
+
+  var DARK_COL   = ['#f59e0b','#a78bfa','#2dd4bf','#94a3b8'];
+  var LIGHT_COL  = ['#d97706','#7c3aed','#0d9488','#64748b'];
+  var DARK_BASE  = ['rgba(245,158,11,','rgba(167,139,250,','rgba(45,212,191,','rgba(148,163,184,'];
+  var LIGHT_BASE = ['rgba(217,119,6,','rgba(124,58,237,','rgba(13,148,136,','rgba(100,116,139,'];
+
+  var FONT     = 'bold 13px Pretendard, sans-serif';
+  var PX       = 14, H_TAG = 34, GAP = 8;
+  var ICON_SZ  = 15, ICON_GAP = 6;
+  var P_R      = 5;    /* 소프트 바디 입자 반지름 */
+  var COLS     = 4;    /* 가로 입자 수 */
+  var ROWS     = 2;    /* 세로 입자 수 */
+  var CDN      = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/';
+
+  /* 아이콘 캐시 */
+  var iconCache = {};
+  function loadIcon(slug, color) {
+    var key = slug + '|' + color;
+    if (key in iconCache) return;
+    iconCache[key] = null;
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      var oc = document.createElement('canvas');
+      oc.width = ICON_SZ; oc.height = ICON_SZ;
+      var oc2 = oc.getContext('2d');
+      oc2.drawImage(img, 0, 0, ICON_SZ, ICON_SZ);
+      oc2.globalCompositeOperation = 'source-in';
+      oc2.fillStyle = color; oc2.fillRect(0, 0, ICON_SZ, ICON_SZ);
+      iconCache[key] = oc;
+    };
+    img.onerror = function(){ iconCache[key] = 'err'; };
+    img.src = CDN + slug + '.svg';
+  }
+  function preloadIcons() {
+    TAGS.forEach(function(t) {
+      var slug = ICON_SLUGS[t.text]; if (!slug) return;
+      [DARK_COL[t.cat], LIGHT_COL[t.cat]].forEach(function(c){ loadIcon(slug, c); });
+    });
+  }
+
+  /* 태그 크기 */
+  ctx.font = FONT;
+  var tagSizes = TAGS.map(function(t) {
+    var hasIco = !!ICON_SLUGS[t.text];
+    var tw = ctx.measureText(t.text).width;
+    return { w: tw + PX*2 + (hasIco ? ICON_SZ+ICON_GAP : 0), h: H_TAG, hasIco: hasIco, tw: tw };
+  });
+
+  var engine = Engine.create({ gravity: { y: 0.6 } });
+  var world  = engine.world;
+  var W = 0, H = 300;
+  var walls = [], started = false;
+
+  function setupCanvas() {
+    W = canvas.parentElement.clientWidth;
+    canvas.width = W; canvas.height = H;
+  }
+  function setupWalls() {
+    walls.forEach(function(w){ Composite.remove(world, w); });
+    walls = [
+      Bodies.rectangle(W/2,  H+25,  W+200, 50, {isStatic:true, friction:1}),
+      Bodies.rectangle(-25,  H/2,   50, H*2,   {isStatic:true}),
+      Bodies.rectangle(W+25, H/2,   50, H*2,   {isStatic:true})
+    ];
+    Composite.add(world, walls);
+  }
+
+  /* ── 태그 1개 생성 (단단한 사각형) ── */
+  var tagBodies = [], tagMap = {};
+
+  function spawnTag(cx, cy, sz, tag) {
+    var body = Bodies.rectangle(cx, cy, sz.w, sz.h, {
+      restitution: 0.2, friction: 0.6, frictionAir: 0.02, density: 0.003,
+      chamfer: { radius: sz.h / 2 }   /* pill 형태로 모서리 깎기 */
+    });
+    Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.05);
+    tagBodies.push(body);
+    tagMap[body.id] = { text:tag.text, cat:tag.cat, w:sz.w, h:sz.h, hasIco:sz.hasIco, tw:sz.tw };
+    Composite.add(world, body);
+  }
+
+  /* ── 낙하 스폰 ── */
+  var spawnTimers = [];
+
+  function initBlocks() {
+    spawnTimers.forEach(clearTimeout);
+    spawnTimers = [];
+    tagBodies.forEach(function(b){ Composite.remove(world, b); });
+    tagBodies = []; tagMap = {};
+
+    var items = TAGS.map(function(t,i){ return {tag:t, sz:tagSizes[i]}; })
+                    .sort(function(){ return Math.random()-0.5; });
+
+    items.forEach(function(item, order){
+      var id = setTimeout(function(){
+        var sz = item.sz;
+        var cx = sz.w/2 + 12 + Math.random() * Math.max(0, W - sz.w - 24);
+        spawnTag(cx, -sz.h/2 - 8, sz, item.tag);
+      }, order * 200);
+      spawnTimers.push(id);
+    });
+  }
+
+  /* roundRect 폴리필 */
+  function rr(c, x, y, w, h, r) {
+    if (c.roundRect) { c.roundRect(x,y,w,h,r); return; }
+    c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.arcTo(x+w,y,x+w,y+r,r);
+    c.lineTo(x+w,y+h-r); c.arcTo(x+w,y+h,x+w-r,y+h,r);
+    c.lineTo(x+r,y+h); c.arcTo(x,y+h,x,y+h-r,r);
+    c.lineTo(x,y+r); c.arcTo(x,y,x+r,y,r);
+    c.closePath();
+  }
+
+  /* ── 렌더 ── */
+  function render() {
+    var dark  = document.documentElement.getAttribute('data-theme') !== 'light';
+    var cols  = dark ? DARK_COL  : LIGHT_COL;
+    var bases = dark ? DARK_BASE : LIGHT_BASE;
+
+    ctx.clearRect(0, 0, W, H);
+
+    tagBodies.forEach(function(body) {
+      var info = tagMap[body.id];
+      if (!info) return;
+      var x = body.position.x, y = body.position.y, a = body.angle;
+      var col  = cols[info.cat], base = bases[info.cat];
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(a);
+
+      ctx.beginPath();
+      rr(ctx, -info.w/2, -info.h/2, info.w, info.h, info.h/2);
+      ctx.fillStyle   = base + '0.16)';
+      ctx.fill();
+      ctx.strokeStyle = col + '80';
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+
+      /* 아이콘 + 텍스트 (로컬 좌표 기준) */
+      var textX = 0;
+      if (info.hasIco) {
+        var slug = ICON_SLUGS[info.text];
+        var ic   = slug ? iconCache[slug+'|'+col] : null;
+        if (ic && typeof ic === 'object') {
+          var icoX = -info.w/2 + PX;
+          ctx.drawImage(ic, icoX, -ICON_SZ/2, ICON_SZ, ICON_SZ);
+          textX = icoX + ICON_SZ + ICON_GAP + info.tw/2;
+        }
+      }
+
+      ctx.font = FONT; ctx.fillStyle = col;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(info.text, textX, 1);
+
+      ctx.restore();
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  /* 마우스 드래그 */
+  var mouse = Mouse.create(canvas);
+  var mc    = MouseConstraint.create(engine, { mouse:mouse, constraint:{stiffness:0.2,damping:0.1} });
+  Composite.add(world, mc);
+  canvas.addEventListener('wheel', function(e){ e.stopPropagation(); }, {passive:true});
+
+  Runner.run(Runner.create(), engine);
+
+  var io = new IntersectionObserver(function(entries){
+    if (entries[0].isIntersecting && !started) {
+      started = true;
+      preloadIcons(); setupCanvas(); setupWalls(); initBlocks(); render();
+      io.disconnect();
+    }
+  }, {threshold:0.1});
+  io.observe(document.getElementById('skills'));
+
+  window.addEventListener('resize', function(){ setupCanvas(); setupWalls(); initBlocks(); });
+  document.getElementById('skillsReset').addEventListener('click', initBlocks);
+})();
+
+// ===== FEEDBACK WIDGET =====
+(function(){
+  const style = document.createElement('style');
+  style.textContent = `
+    #feedback-widget {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #feedback-widget:hover {
+      width: 100px;
+      height: 220px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 36px;
+      gap: 0.5rem;
+      padding: 0.85rem 0.5rem;
+    }
+    [data-theme="light"] #feedback-widget {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    [data-theme="light"] #feedback-widget:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .feedback-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+      opacity: 1;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 400;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+      font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #feedback-widget:hover .feedback-icon {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+    }
+    .feedback-question {
+      display: none;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      width: 90%;
+      line-height: 1.35;
+      letter-spacing: -0.5px;
+      padding: 0.5rem 0 0.25rem 0;
+      word-break: keep-all;
+    }
+    #feedback-widget:hover .feedback-question {
+      display: block;
+    }
+    .feedback-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      padding: 0.4rem 0;
+      width: 100%;
+      height: 40px;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      position: relative;
+      border-radius: 12px;
+    }
+    #feedback-widget:hover .feedback-btn {
+      display: flex;
+    }
+    .feedback-btn:hover {
+      transform: scale(1.2);
+    }
+    .feedback-btn::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 100%;
+      margin-right: 0.8rem;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.4rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      backdrop-filter: blur(12px);
+      letter-spacing: 0.02em;
+    }
+    [data-theme="light"] .feedback-btn::after {
+      background: rgba(26, 32, 44, 0.9);
+    }
+    .feedback-btn:hover::after {
+      opacity: 1;
+    }
+    .feedback-btn.clicked {
+      animation: pulse-click 0.5s ease-out;
+    }
+    @keyframes pulse-click {
+      0% { transform: scale(1.35); }
+      100% { transform: scale(1.2); }
+    }
+    @media(max-width: 640px) {
+      #feedback-widget {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 52px;
+        height: 52px;
+      }
+      #feedback-widget:hover {
+        width: 90px;
+        height: 200px;
+        padding: 0.7rem 0.4rem;
+      }
+      .feedback-icon { font-size: 1.9rem; }
+      .feedback-btn { font-size: 1.6rem; height: 36px; }
+      .feedback-btn::after { font-size: 0.65rem; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const widget = document.createElement('div');
+  widget.id = 'feedback-widget';
+  widget.innerHTML = `
+    <span class="feedback-icon">📩</span>
+    <span class="feedback-question">해당 지원자가 얼마나 매력적으로 보이시나요?</span>
+    <button class="feedback-btn" id="feedback-good" data-label="응원해요!">👍</button>
+    <button class="feedback-btn" id="feedback-bad" data-label="개선이 필요해 보여요!">👎</button>
+  `;
+  document.body.appendChild(widget);
+
+  function sendFeedback(type) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'feedback', {
+        'feedback_type': type,
+        'page_path': window.location.pathname,
+        'page_title': document.title,
+        'timestamp': new Date().toISOString()
+      });
+    }
+    const btn = type === 'positive' ? document.getElementById('feedback-good') : document.getElementById('feedback-bad');
+    btn.classList.add('clicked');
+    setTimeout(() => btn.classList.remove('clicked'), 500);
+  }
+
+  document.getElementById('feedback-good').addEventListener('click', () => sendFeedback('positive'));
+  document.getElementById('feedback-bad').addEventListener('click', () => sendFeedback('negative'));
 })();
 </script>
 </body>
