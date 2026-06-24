@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5">
+<title>영화 추천 챗봇 | 임연오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="dark"]{
+  --bg:#0b0f18;--bg2:#111827;--bg3:#1a2035;--card:#161c2d;
+  --acc:#f59e0b;--acc2:#7C3AED;--acc3:#f59e0b;
+  --txt:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --border:rgba(255,255,255,0.08);--r:16px;--r2:8px;
+  --sh:0 4px 24px rgba(0,0,0,.4);--t:.3s cubic-bezier(.4,0,.2,1);
+  --proj:#f59e0b;--nav-bg:rgba(11,15,24,.92)
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e2e8f0;--card:#ffffff;
+  --acc:#d97706;--acc2:#6d28d9;--acc3:#d97706;
+  --txt:#1a202c;--muted:#4a5568;--dim:#718096;
+  --border:rgba(0,0,0,0.09);--r:16px;--r2:8px;
+  --sh:0 4px 24px rgba(0,0,0,.08);--t:.3s cubic-bezier(.4,0,.2,1);
+  --proj:#d97706;--nav-bg:rgba(240,244,248,.92)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--proj);border-radius:3px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-weight:700;line-height:1.2}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s}
+.nav-inner{max-width:900px;margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;font-weight:600;transition:var(--t)}
+.back-btn:hover{color:var(--proj)}
+.back-btn svg{transition:transform var(--t)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--proj)}
+.nav-logo span{color:var(--txt)}
+.proj-nav{display:flex;gap:8px}
+.pnav-btn{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;padding:6px 14px;border:1px solid var(--border);border-radius:100px;transition:var(--t)}
+.pnav-btn:hover{border-color:var(--proj);color:var(--proj)}
+.theme-btn{width:36px;height:22px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .35s,border .35s;flex-shrink:0}
+.theme-thumb{width:16px;height:16px;border-radius:50%;background:var(--proj);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+[data-theme="light"] .theme-thumb{transform:translateX(14px)}
+
+/* HERO */
+.proj-hero{padding:110px 0 60px;position:relative;overflow:hidden}
+.proj-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(245,158,11,.12),transparent 70%)}
+.proj-hero-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at center,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);margin-bottom:20px}
+.breadcrumb a{color:var(--proj);font-weight:600}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:var(--dim)}
+.proj-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pbadge{padding:4px 14px;border-radius:100px;font-size:.76rem;font-weight:700;border:1px solid}
+.pbadge-cat{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--proj)}
+.pbadge-award{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:var(--acc3)}
+.proj-h1{font-size:clamp(2.4rem,6vw,4rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.proj-h1 span{color:var(--proj)}
+.proj-subtitle{font-size:1.05rem;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:36px}
+.meta-strip{display:flex;gap:24px;flex-wrap:wrap;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:0}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.meta-val{font-size:.9rem;font-weight:600}
+
+/* CONTENT */
+.proj-content{padding:60px 0 100px}
+.section{margin-bottom:56px}
+.section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
+
+/* IMAGE PLACEHOLDER */
+.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--card);border:2px dashed rgba(245,158,11,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+.img-placeholder:hover{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.04)}
+.img-placeholder svg{color:var(--proj);opacity:.5}
+.img-placeholder .hint{font-size:.75rem;color:var(--dim);margin-top:4px}
+.img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.img-sm{aspect-ratio:4/3}
+
+/* ABSTRACT */
+.abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
+.abstract-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem}
+.abstract-card p:last-child{margin-bottom:0}
+.abstract-card strong{color:var(--proj)}
+
+/* BULLET LIST */
+.bullet-list{display:flex;flex-direction:column;gap:12px}
+.bullet-item{display:flex;gap:14px;align-items:flex-start}
+.bullet-num{width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--proj);flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.bullet-text{font-size:.93rem;color:var(--muted);line-height:1.75}
+.bullet-text strong{color:var(--txt)}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:center;transition:var(--t)}
+.kpi-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-3px)}
+.kpi-val{font-size:1.8rem;font-weight:900;color:var(--proj);display:block;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.kpi-label{font-size:.8rem;color:var(--muted);line-height:1.4}
+
+/* TECH STACK */
+.tech-grid{display:flex;flex-wrap:wrap;gap:10px}
+.tech-chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.85rem;font-weight:700;transition:var(--t)}
+.tech-chip:hover{border-color:rgba(245,158,11,.3);color:var(--proj)}
+
+/* ARCH */
+.arch-box{background:linear-gradient(135deg,rgba(245,158,11,.05),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:var(--r);padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:0}
+.arch-flow{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+.arch-step{background:var(--card);border:1.5px solid rgba(245,158,11,.25);border-radius:14px;padding:18px 22px;font-family:'JetBrains Mono',monospace;font-size:.86rem;color:var(--muted);line-height:1.6;width:68%;text-align:center;transition:var(--t);position:relative;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.arch-step:hover{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.02);box-shadow:0 4px 16px rgba(245,158,11,.1)}
+.arch-step .hl{color:var(--proj);font-weight:800;font-size:.92rem}
+.arch-step .hl2{color:#a78bfa;font-weight:800;font-size:.92rem}
+.arch-arrow{color:var(--proj);font-size:1.5rem;font-weight:900;padding:10px 0;opacity:.7;height:28px;display:flex;align-items:center}
+@media(max-width:640px){.arch-box{padding:24px 16px}.arch-step{width:85%;font-size:.8rem}}
+
+/* IMPRESSIONS */
+.impression-card{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(124,58,237,.08));border:1px solid rgba(245,158,11,.2);border-radius:var(--r);padding:32px;position:relative;overflow:hidden}
+.impression-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem;position:relative;z-index:1;font-size:.95rem}
+.impression-card p:last-child{margin-bottom:0}
+.impression-card strong{color:var(--txt);font-weight:600}
+
+/* PROJ NAV */
+.proj-footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border)}
+.pfnav{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;transition:var(--t);display:flex;flex-direction:column;gap:4px}
+.pfnav:hover{border-color:rgba(245,158,11,.3);transform:translateY(-2px)}
+.pfnav-dir{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.pfnav-title{font-size:.95rem;font-weight:700;color:var(--txt)}
+.pfnav-sub{font-size:.8rem;color:var(--muted)}
+.pfnav.next{text-align:right}
+.pfnav.next .pfnav-dir{justify-content:flex-end}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+.rev.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.05s}.d2{transition-delay:.12s}.d3{transition-delay:.18s}
+
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .img-grid{grid-template-columns:1fr}
+  .proj-footer-nav{grid-template-columns:1fr}
+  .meta-strip{flex-direction:column;gap:16px}
+}
+</style>
+<script>(function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/index.html" class="back-btn">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      포트폴리오로 돌아가기
+    </a>
+    <div class="nav-logo">임연오<span>.dev</span></div>
+    <div class="proj-nav">
+      <button class="theme-btn" id="themeToggle" title="테마 전환"><div class="theme-thumb" id="themeThumb">☀️</div></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="proj-hero">
+  <div class="proj-hero-bg"></div>
+  <div class="container hero-inner">
+    <div class="breadcrumb">
+      <a href="/index.html">Home</a>
+      <span>/</span>
+      <span>Projects</span>
+      <span>/</span>
+      <span>영화 추천 챗봇</span>
+    </div>
+    <div class="proj-badge-row">
+      <span class="pbadge pbadge-cat">🎬 LLM · RAG</span>
+      <span class="pbadge pbadge-cat">💬 LangGraph 챗봇</span>
+    </div>
+    <h1 class="proj-h1">ㅇㅎㅊㅊ</h1>
+    <p class="proj-subtitle">상황·감정·연출요소·인지부하 4가지 축으로 OTT 영화를 정밀 추천하는 웹 서비스. RAG → LangChain → LangGraph로 진화하며, 사용자의 세밀한 감정 요구를 대화형으로 타겟팅합니다.</p>
+    <div class="meta-strip">
+      <div class="meta-item"><span class="meta-label">기간</span><span class="meta-val">2026.05 — 06</span></div>
+      <div class="meta-item"><span class="meta-label">프로젝트</span><span class="meta-val">개인 프로젝트</span></div>
+      <div class="meta-item"><span class="meta-label">역할</span><span class="meta-val">기획·DB·전처리·구현·배포 전 과정</span></div>
+      <div class="meta-item"><span class="meta-label">성격</span><span class="meta-val">LLM 복습 & 웹 서비스 개발</span></div>
+      <div class="meta-item"><span class="meta-label">개발</span><span class="meta-val" style="font-size:.75rem">Claude와 협업</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="proj-content">
+  <div class="container">
+
+    <!-- 대표 이미지 -->
+    <div class="section rev">
+      <div class="img-placeholder" id="ph-main">
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <div class="section rev d1">
+      <h2 class="section-h">Overview</h2>
+      <div class="abstract-card">
+        <p>기존 영화 추천(협업 필터링, 콘텐츠 유사도)은 <strong>"무엇을 볼지 고르는 데" 과도한 인지 부하</strong>를 야기합니다. ㅇㅎㅊㅊ은 이 페인포인트를 해결하기 위해 탄생했습니다.</p>
+        <p><strong>핵심 가설:</strong> 사용자가 영화를 찾을 때 진정으로 원하는 것은 "특정 상황에서 느끼고 싶은 감정"입니다. 이를 정밀하게 타겟팅하기 위해 상황(Situation)·감정(Emotion)·연출요소(Direction)·인지부하(Cognitive Load) <strong>4가지 축(4 Pillars)으로 벡터 연산</strong>합니다.</p>
+        <p><strong>기술 진화:</strong> RAG 복습으로 시작 → LangChain 프로토타입 → 서비스 목적에 맞춰 <strong>LangGraph 대화형 워크플로우로 전환</strong>. 사용자의 모호한 질문을 정제된 벡터 쿼리로 변환하는 지능형 라우팅을 구현했습니다.</p>
+      </div>
+    </div>
+
+    <!-- Result & KPI -->
+    <div class="section rev">
+      <h2 class="section-h">Result & KPI</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-val">1,930</span>
+          <span class="kpi-label">영화 데이터<br>× 20개 컬럼 DB</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">4-Pillar</span>
+          <span class="kpi-label">LLM 기반 태깅<br>시스템 구축</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val">LangGraph</span>
+          <span class="kpi-label">대화형 라우팅<br>워크플로우</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features & Implementation -->
+    <div class="section rev">
+      <h2 class="section-h">핵심 기능 & 구현</h2>
+      <div class="bullet-list">
+        <div class="bullet-item">
+          <span class="bullet-num">1</span>
+          <span class="bullet-text"><strong>4-Pillar LLM 태깅 시스템</strong> — 각 영화마다 높은 평점 리뷰/낮은 평점 리뷰를 교차 분석해 상황·감정·연출요소·인지부하를 LLM이 자동 태깅. 노이즈 섞인 원본 리뷰 임베딩 방식을 구조화된 데이터로 전환</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">2</span>
+          <span class="bullet-text"><strong>LangGraph 대화형 라우팅</strong> — 사용자의 모호한 질문(예: "심심할 때 봐야 할 영화")을 정제된 벡터 쿼리로 변환하는 다단계 대화형 워크플로우. 모든 사용자 시나리오를 손으로 시뮬레이션해 설계</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">3</span>
+          <span class="bullet-text"><strong>크롤링 검수 로직 자동화</strong> — TMDB + 왓챠 데이터 병합 시 "동명 영화 인식 오류" 및 "개봉 연도 불일치" 문제 해결. 연도+감독명 다중 교차 검증으로 데이터 무결성 확보</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">4</span>
+          <span class="bullet-text"><strong>Vector DB 기반 검색</strong> — 4-Pillar 태그를 벡터로 임베딩해 사용자의 감정 요구와 가장 유사한 영화를 의미론적으로 검색 (내용 유사도 기반 추천 탈피)</span>
+        </div>
+        <div class="bullet-item">
+          <span class="bullet-num">5</span>
+          <span class="bullet-text"><strong>Streamlit 웹 인터페이스</strong> — 대화형 UI로 사용자가 자신의 상황·감정을 직관적으로 입력하고 실시간 추천 결과를 확인</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="section rev">
+      <h2 class="section-h">Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-chip">Python</div>
+        <div class="tech-chip">LangChain</div>
+        <div class="tech-chip">LangGraph</div>
+        <div class="tech-chip">Streamlit</div>
+        <div class="tech-chip">Gemini API</div>
+        <div class="tech-chip">Vector DB</div>
+        <div class="tech-chip">TMDB API</div>
+        <div class="tech-chip">RAG</div>
+        <div class="tech-chip">Prompt Engineering</div>
+        <div class="tech-chip">GitHub</div>
+      </div>
+    </div>
+
+    <!-- Data Flow -->
+    <div class="section rev">
+      <h2 class="section-h">Data Pipeline</h2>
+      <div class="abstract-card">
+        <p><strong>파이프라인 흐름:</strong> TMDB API / 왓챠 크롤링 → 감독명+연도 매칭 검증 및 전처리 → LLM 기반 4-Pillar 속성 태깅 → LangGraph 기반 추천 라우팅 → 사용자 맞춤형 OTT 영화 추천 결과</p>
+        <p><strong>RAG → LangChain → LangGraph 진화:</strong> 초기 RAG로 시작했으나 복합한 사용자 요구사항을 처리하기 위해 LangChain 프로토타입 거쳐 최종적으로 LangGraph의 상태 머신 기반 대화형 워크플로우로 확정. (상세 파이프라인 다이어그램은 개발 중)</p>
+      </div>
+    </div>
+
+    <!-- 핵심 성과 -->
+    <div class="section rev">
+      <h2 class="section-h">데이터 & 성과</h2>
+      <div class="abstract-card">
+        <p><strong>1,930개의 영화 DB 구축:</strong> TMDB 및 왓챠 데이터를 통합하면서 동명 영화 인식 오류와 연도 불일치 문제를 연도+감독명 다중 교차 검증으로 해결. 안정적이고 일관성 있는 20개 컬럼 DB 완성.</p>
+        <p><strong>LLM 기반 태깅 품질 고도화:</strong> 노이즈 섞인 원문 리뷰 임베딩 → LLM 구조화 태깅 프로세스로 전환. "우울할 때 위로받고 싶어", "생각 없이 웃고 싶어" 같은 세밀한 감정 요구에 안정적인 추천 결과 도출.</p>
+        <p><strong>LangGraph 워크플로우 완성:</strong> 사용자가 어떻게 서비스를 쓸지 모든 테스트 케이스를 손으로 시뮬레이션한 후 LangGraph 상태 머신으로 구현. 복합한 대화형 로직을 수렴성 있게 처리.</p>
+      </div>
+    </div>
+
+    <!-- Impressions -->
+    <div class="section rev">
+      <h2 class="section-h">배운 점 & 회고</h2>
+      <div class="impression-card">
+        <p><strong>DB 스키마의 중요성을 뼈저리게 깨달았습니다.</strong> 처음에 명확한 분류 기준 없이 시작했다가, 데이터 전처리와 수집 단계를 반복적으로 되돌아가야 했습니다. "처음 아키텍처가 얼마나 중요한가"를 몸으로 체험했고, 이제는 설계 단계에서 데이터 기준을 확실히 수립하는 것의 가치를 알게 되었습니다.</p>
+        <p><strong>LLM과의 협업 방식을 터득했습니다.</strong> Prompt Engineering, 코드 리뷰 등 Claude와의 긴밀한 협업 프로세스가 얼마나 효율적인지 체험했습니다. 특히 복잡한 LangGraph 구조 설계 시 "사용자 시나리오를 먼저 손으로 그린 후 LLM에게 구현을 맡기는" 방식의 힘을 느꼈습니다.</p>
+        <p><strong>RAG의 한계와 대안을 찾았습니다.</strong> 원문 리뷰를 그대로 임베딩하는 RAG 방식에서는 긍정/부정이 혼재되어 품질이 오락가락했습니다. LLM을 활용해 먼저 구조적 태깅을 거친 후 벡터 연산하는 방식이 결과의 예측 가능성과 품질을 크게 향상시킨다는 것을 배웠습니다.</p>
+        <p><strong>AI 엔지니어로서의 자신감을 얻었습니다.</strong> 기획부터 배포까지 전 과정을 단독으로 진행하며, 방대한 텍스트 데이터 속에서 핵심 인사이트를 구조화하여 비즈니스 가치로 연결하는 경험을 쌓았습니다.</p>
+      </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="proj-footer-nav rev">
+      <a href="/projects/ccbb.html" class="pfnav">
+        <span class="pfnav-dir">← Previous Project</span>
+      </a>
+      <div class="pfnav next" style="opacity:.3;cursor:default">
+        <span class="pfnav-dir">Next Project →</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var h=document.documentElement;
+  var btn=document.getElementById('themeToggle');
+  var thumb=document.getElementById('themeThumb');
+  function upd(t){thumb.textContent=t==='dark'?'🌙':'☀️';}
+  upd(h.getAttribute('data-theme'));
+  btn.addEventListener('click',function(){
+    var nt=h.getAttribute('data-theme')==='dark'?'light':'dark';
+    h.setAttribute('data-theme',nt);
+    localStorage.setItem('theme',nt);
+    upd(nt);
+  });
+})();
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }});
+}, { threshold: .08 });
+document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5">
+<title>BookLink: 도서 추천 이동형 로봇 | 임연오</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root,[data-theme="dark"]{
+  --bg:#0b0f18;--bg2:#111827;--bg3:#1a2035;--card:#161c2d;
+  --acc:#f59e0b;--acc2:#7C3AED;--acc3:#f59e0b;
+  --txt:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --border:rgba(255,255,255,0.08);--r:16px;--r2:8px;
+  --sh:0 4px 24px rgba(0,0,0,.4);--t:.3s cubic-bezier(.4,0,.2,1);
+  --proj:#f59e0b;--nav-bg:rgba(11,15,24,.92)
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e2e8f0;--card:#ffffff;
+  --acc:#d97706;--acc2:#6d28d9;--acc3:#d97706;
+  --txt:#1a202c;--muted:#4a5568;--dim:#718096;
+  --border:rgba(0,0,0,0.09);--r:16px;--r2:8px;
+  --sh:0 4px 24px rgba(0,0,0,.08);--t:.3s cubic-bezier(.4,0,.2,1);
+  --proj:#d97706;--nav-bg:rgba(240,244,248,.92)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--proj);border-radius:3px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-weight:700;line-height:1.2}
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .35s}
+.nav-inner{max-width:900px;margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;font-weight:600;transition:var(--t)}
+.back-btn:hover{color:var(--proj)}
+.back-btn svg{transition:transform var(--t)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--proj)}
+.nav-logo span{color:var(--txt)}
+.theme-btn{width:36px;height:22px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;padding:2px;transition:background .35s,border .35s;flex-shrink:0}
+.theme-thumb{width:16px;height:16px;border-radius:50%;background:var(--proj);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+[data-theme="light"] .theme-thumb{transform:translateX(14px)}
+
+/* HERO */
+.proj-hero{padding:110px 0 60px;position:relative;overflow:hidden}
+.proj-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(245,158,11,.12),transparent 70%)}
+.proj-hero-bg::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at center,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);margin-bottom:20px}
+.breadcrumb a{color:var(--proj);font-weight:600;cursor:pointer;transition:var(--t)}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:var(--dim)}
+.proj-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pbadge{padding:4px 14px;border-radius:100px;font-size:.76rem;font-weight:700;border:1px solid}
+.pbadge-cat{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--proj)}
+.proj-h1{font-size:clamp(2.4rem,6vw,4rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.proj-h1 span{color:var(--proj)}
+.proj-subtitle{font-size:1.05rem;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:36px}
+.meta-strip{display:flex;gap:24px;flex-wrap:wrap;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:0}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.meta-val{font-size:.9rem;font-weight:600}
+.meta-val.emp{color:var(--proj)}
+
+/* CONTENT */
+.proj-content{padding:60px 0 100px}
+.section{margin-bottom:56px}
+.section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--txt)}
+.section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
+
+/* ABSTRACT */
+.abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
+.abstract-card p{color:var(--muted);line-height:1.9;margin-bottom:.8rem}
+.abstract-card p:last-child{margin-bottom:0}
+.abstract-card strong{color:var(--proj)}
+
+/* BULLET LIST */
+.bullet-list{display:flex;flex-direction:column;gap:12px}
+.bullet-item{display:flex;gap:14px;align-items:flex-start}
+.bullet-num{width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--proj);flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.bullet-text{font-size:.93rem;color:var(--muted);line-height:1.75}
+.bullet-text strong{color:var(--txt)}
+
+/* TECH STACK */
+.ttech{display:flex;flex-wrap:wrap;gap:8px}
+.ttag{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#a78bfa;padding:5px 12px;border-radius:6px;font-size:.78rem;font-weight:600}
+[data-theme="light"] .ttag{background:rgba(109,40,217,.08);color:#6d28d9;border-color:rgba(109,40,217,.2)}
+
+/* PDF VIEWER */
+.pdf-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:relative}
+.pdf-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.pdf-title{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.pdf-link{display:flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700;color:var(--proj);transition:var(--t)}
+.pdf-link:hover{opacity:.75}
+.pdf-iframe{width:100%;height:640px;border:none;display:block}
+/* PDF WATERMARK */
+.pdf-wm{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden;opacity:.08;user-select:none;-webkit-user-select:none}
+.pdf-wm-inner{position:absolute;top:-40%;left:-40%;width:180%;height:180%;transform:rotate(-22deg);animation:pdf-wm-drift 28s linear infinite}
+.pdf-wm-row{display:flex;gap:90px;margin-bottom:68px}
+.pdf-wm-text{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--txt);letter-spacing:.04em}
+@keyframes pdf-wm-drift{0%{transform:rotate(-22deg) translate(0,0)}100%{transform:rotate(-22deg) translate(100px,80px)}}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:40px 24px;margin-top:40px;transition:background .35s}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.footer-note{font-size:.85rem;color:var(--dim)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .meta-strip{flex-direction:column;gap:16px}
+  .proj-h1{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="back-btn">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+      돌아가기
+    </a>
+    <div class="nav-logo">YeonOh<span>.dev</span></div>
+    <button class="theme-btn" id="themeToggle" title="테마 전환">
+      <div class="theme-thumb">🌙</div>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="proj-hero">
+  <div class="proj-hero-bg"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="breadcrumb">
+        <a href="/">홈</a>
+        <span>/</span>
+        <a href="/#projects">프로젝트</a>
+        <span>/</span>
+        <span>BookLink: 이어봇</span>
+      </div>
+      <div class="proj-badge-row">
+        <div class="pbadge pbadge-cat">🤖 AI · Robot · Design Thinking</div>
+      </div>
+      <h1 class="proj-h1">BookLink<span>: 이어봇</span></h1>
+      <p class="proj-subtitle">도서관을 '느슨한 연결감'의 공간으로 변모시키는 자율주행 도서 추천 로봇</p>
+      <div class="meta-strip">
+        <div class="meta-item">
+          <div class="meta-label">📅 기간</div>
+          <div class="meta-val">2025.12 - 2026.01</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">👥 팀 구성</div>
+          <div class="meta-val">4인 (경영학과,법학과,소비자학과)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">🎯 역할</div>
+          <div class="meta-val">PM / 서비스 기획</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="proj-content">
+  <div class="container">
+
+    <!-- OVERVIEW -->
+    <div class="section">
+      <h2 class="section-h">프로젝트 개요</h2>
+      <div class="abstract-card">
+        <p>도서관 이용자 간의 추천 도서와 감정을 공유하여 <strong>'느슨한 연결감'</strong>을 형성하고 능동적인 독서 경험을 제공하는 <strong>자율주행 AMR 기반 인터랙션 로봇</strong>입니다.</p>
+        <p>추천자가 도서를 로봇에 올리고 추천 이유를 입력하면, 로봇이 도서관 전역을 자율주행하며 대형 디스플레이를 통해 추천 정보를 시각화하고, 관심 있는 이용자가 직접 책을 픽업하는 방식으로 작동합니다. LLM 기반 AI 엔진이 추천 문구와 도서 큐레이션을 자동 생성하고, 익명성을 유지한 채 타인과의 독서 소통을 가능하게 합니다.</p>
+      </div>
+    </div>
+
+    <!-- 주요 기능 -->
+    <div class="section">
+      <h2 class="section-h">주요 기능</h2>
+      <div class="bullet-list">
+        <div class="bullet-item">
+          <div class="bullet-num">1</div>
+          <div class="bullet-text"><strong>RFID 기반 도서 자동 인식</strong>: 추천자가 책을 거치대에 올리면 내장된 RFID 리더기가 실시간으로 도서 정보를 자동으로 인식하고 외부 도서관 DB와 연동합니다.</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-num">2</div>
+          <div class="bullet-text"><strong>LLM 기반 추천 문구 자동 생성</strong>: 추천자의 텍스트 입력을 분석하여 개인화된 추천 문구와 도서 성격(MBTI 형식)을 자동으로 생성합니다.</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-num">3</div>
+          <div class="bullet-text"><strong>자율주행 순회 및 디스플레이</strong>: 도서관 내 지정된 동선을 LiDAR 기반 자율주행으로 순회하며, 27인치 대형 LCD를 통해 추천 도서 정보를 시각적으로 전시합니다.</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-num">4</div>
+          <div class="bullet-text"><strong>직관적인 터치 인터페이스</strong>: 9.2인치 터치형 LCD를 통해 도서 성격 선택, 추천 이유 입력, 추천 대상 설정을 쉽고 명확하게 진행할 수 있습니다.</div>
+        </div>
+        <div class="bullet-item">
+          <div class="bullet-num">5</div>
+          <div class="bullet-text"><strong>저소음 운영 및 안전 기술</strong>: 최대 소음 40dB 이하의 BLDC 모터와 ToF/Depth 카메라를 통해 사람과 장애물을 안전하게 회피합니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 배운 점 -->
+    <div class="section">
+      <h2 class="section-h">배운 점 & 회고</h2>
+      <div class="abstract-card">
+        <p><strong>'로봇의 정의'가 생각보다 넓다는 것</strong>을 깨달았습니다. 하드웨어를 제어하는 것뿐만 아니라, 챗봇 또한 로봇의 범주에 포함할 수 있다고 알게 되었습니다. 이 프로젝트를 통해 기술과 인간관계의 경계를 넘어, 사람들을 잇는 도구로서의 로봇 역할을 생각해보게 되었고, 앞으로 인공지능의 발전과 함께 로봇이 세상에 미칠 영향이 클 것 같습니다.</p>
+        <p><strong>직접 설문 문항을 제작하며 가설 검증 프로세스</strong>를 경험했습니다. 설문을 통해 가설을 검증할 때, 말투와 단어에 따라 응답이 달라질 수 있기 때문에 설문 문항을 꼼꼼히 설계했습니다. 또한, 참여자의 이탈과 성의없는 응답을 막기 위해 문항을 쉽고 명확하게 제작하는 것에 중점을 두고 팀원들과 함께 고민했습니다.</p>
+      </div>
+    </div>
+
+    <!-- PDF 발표 자료 -->
+    <div class="section">
+      <h2 class="section-h">프로젝트 발표 자료</h2>
+      <div class="pdf-wrap">
+        <div class="pdf-header">
+          <span class="pdf-title">
+            📄 이어봇_디자인씽킹프로젝트_한국AI로봇산업협회.pdf
+          </span>
+          <a href="../src/project/booklink/[publish]이어봇_디자인씽킹프로젝트_한국AI로봇산업협회.pdf" target="_blank" class="pdf-link">
+            ⬇️ 다운로드
+          </a>
+        </div>
+        <iframe src="../src/project/booklink/[publish]이어봇_디자인씽킹프로젝트_한국AI로봇산업협회.pdf#toolbar=0&navpanes=0" class="pdf-iframe" title="BookLink 발표 자료"></iframe>
+        <div class="pdf-wm"><div class="pdf-wm-inner" id="pdf-wm-inner"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-note">© 2026 Yeon-oh Im · 모든 프로젝트는 GitHub에서 확인할 수 있습니다</div>
+  </div>
+</footer>
+
+<script>
+// Theme toggle
+const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const thumb = themeToggle.querySelector('.theme-thumb');
+
+function setTheme(t) {
+  html.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  thumb.textContent = t === 'dark' ? '🌙' : '☀️';
+}
+
+const saved = localStorage.getItem('theme') || 'light';
+setTheme(saved);
+
+themeToggle.addEventListener('click', () => {
+  setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+// PDF watermark
+(function(){var e=document.getElementById('pdf-wm-inner');if(!e)return;var t='©Yeon-oh Im · All Rights Reserved';var h='';for(var i=0;i<20;i++){h+='<div class="pdf-wm-row">';for(var j=0;j<6;j++)h+='<span class="pdf-wm-text">'+t+'</span>';h+='</div>';}e.innerHTML=h;})();
+</script>
+
+</body>
+</html>

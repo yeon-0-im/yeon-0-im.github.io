@@ -181,6 +181,10 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 
 /* ===== PROJECTS ===== */
 #projects{background:var(--bg2);transition:background .35s}
+.proj-filter{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.proj-filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:100px;font-size:.83rem;font-weight:600;cursor:pointer;transition:all .3s;font-family:'Pretendard',sans-serif}
+.proj-filter-btn:hover{border-color:var(--acc);color:var(--acc)}
+.proj-filter-btn.active{background:var(--acc);color:var(--bg);border-color:var(--acc)}
 .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:48px}
 .proj-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:background .35s,border .35s,.3s cubic-bezier(.4,0,.2,1)}
 .proj-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.2)}
@@ -188,6 +192,8 @@ nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1
 
 /* 이미지 플레이스홀더 */
 .proj-thumb{height:160px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;transition:background .35s}
+.proj-thumb > img{max-width:150%;max-height:150%;object-fit:contain;object-position:center}
+.proj-thumb::after{content:'';position:absolute;inset:0;background:rgba(128,128,128,.25);pointer-events:none}
 .proj-thumb-inner{display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;user-select:none}
 .proj-thumb-ico{font-size:2rem}
 .proj-thumb-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
@@ -531,73 +537,51 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
   <div class="container">
     <div class="sec-label rev">/ Projects</div>
     <h2 class="sec-title rev">프로젝트<span>.</span></h2>
+    <div class="proj-filter rev" style="margin-bottom:24px">
+      <button class="proj-filter-btn active" data-filter="default">기본</button>
+      <button class="proj-filter-btn" data-filter="latest">최신순</button>
+      <button class="proj-filter-btn" data-filter="contribution">기여도순</button>
+      <button class="proj-filter-btn" data-filter="vision">Vision</button>
+      <button class="proj-filter-btn" data-filter="planning">기획</button>
+      <button class="proj-filter-btn" data-filter="personal">개인프로젝트</button>
+    </div>
     <div class="proj-grid">
 
       <!-- CCBB -->
-      <div class="proj-card rev d1">
+      <div class="proj-card rev d1" data-date="2026.06" data-contribution="15" data-type="vision">
         <div class="proj-thumb">
           <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-ico">🚗</span>
             <span class="proj-thumb-label">이미지 준비 중</span>
           </div>
         </div>
         <div class="proj-head">
           <div class="award-badge">⚡ 진행중</div>
-          <div class="proj-cat"></div>
+          <div class="proj-cat">Computer Vision · 경량화</div>
           <h3 class="proj-title">CCBB</h3>
-          <p class="proj-sub"></p>
+          <p class="proj-sub">교통사고 과실판단 AI 경량화 · 탐지 66% 축소 & 분류 53배 가속</p>
           <div class="proj-chips">
-            <span class="proj-chip">📅 </span>
-            <span class="proj-chip">👥 </span>
+            <span class="proj-chip">📅 2026.05—2026.06</span>
+            <span class="proj-chip">👥 5인 · 기여도 15%</span>
+            <span class="proj-chip">💻 Claude</span>
           </div>
         </div>
         <div class="proj-body">
           <div class="proj-impact">
-            <div class="proj-impact-item"></div>
+            <div class="proj-impact-item">Knowledge Distillation으로 자동 학습 데이터 생성</div>
+            <div class="proj-impact-item">ONNX→TensorRT 양자화로 분류 추론 57배 가속</div>
           </div>
-          <div class="ttech"></div>
+          <div class="ttech"><span class="ttag">PyTorch</span><span class="ttag">MMDetection</span><span class="ttag">TensorRT</span><span class="ttag">Jetson</span><span class="ttag">Knowledge Distillation</span><span class="ttag">Quantization</span></div>
         </div>
         <div class="proj-foot">
           <a href="projects/ccbb.html" class="proj-link">자세히 보기 →</a>
         </div>
       </div>
 
-      <!-- ㅇㅎㅊㅊ -->
-      <div class="proj-card rev d2">
-        <div class="proj-thumb">
-          <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
-            <span class="proj-thumb-label">이미지 준비 중</span>
-          </div>
-        </div>
-        <div class="proj-head">
-          <div class="award-badge">⚡ 진행중</div>
-          <div class="proj-cat"></div>
-          <h3 class="proj-title">ㅇㅎㅊㅊ</h3>
-          <p class="proj-sub"></p>
-          <div class="proj-chips">
-            <span class="proj-chip">📅 </span>
-            <span class="proj-chip">👥 </span>
-          </div>
-        </div>
-        <div class="proj-body">
-          <div class="proj-impact">
-            <div class="proj-impact-item"></div>
-          </div>
-          <div class="ttech"></div>
-        </div>
-        <div class="proj-foot">
-          <a href="projects/ohshsh.html" class="proj-link">자세히 보기 →</a>
-        </div>
-      </div>
-
       <!-- Swing Net V2 -->
-      <div class="proj-card rev d1">
+      <div class="proj-card rev d1" data-date="2025.06" data-contribution="60" data-type="vision">
         <div class="proj-thumb">
-          <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
-            <span class="proj-thumb-label">이미지 준비 중</span>
-          </div>
+          <img loading="lazy" src="src/thumbnails/swingnet_main.gif" alt="Swing Net V2">
         </div>
         <div class="proj-head">
           <div class="award-badge">🏅 장려상</div>
@@ -622,13 +606,69 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
         </div>
       </div>
 
-      <!-- FIT:ON -->
-      <div class="proj-card rev d2">
+      <!-- ㅇㅎㅊㅊ -->
+      <div class="proj-card rev d2" data-date="2026.06" data-contribution="100" data-type="personal">
+        <div class="proj-thumb">
+          <img loading="lazy" src="src/thumbnails/movie_main.png" alt="ㅇㅎㅊㅊ: 리뷰 기반 영화추천" class="proj-thumb-img">
+        </div>
+        <div class="proj-head">
+          <div class="award-badge">⚡ 성능개선 중</div>
+          <div class="proj-cat">랭그래프 · RAG · 챗봇</div>
+          <h3 class="proj-title">ㅇㅎㅊㅊ: 리뷰 기반 영화추천</h3>
+          <p class="proj-sub">상황·감정 기반 OTT 영화 추천 서비스 · 4-Pillar LLM 태깅 + LangGraph</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2026.06</span>
+            <span class="proj-chip">👥 개인 프로젝트</span>
+            <span class="proj-chip">💻 Claude</span>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-impact">
+            <div class="proj-impact-item">1,930개 영화 정보 · 20개 컬럼 DB 구축</div>
+            <div class="proj-impact-item">LangGraph 대화형 라우팅 워크플로우 설계</div>
+          </div>
+          <div class="ttech"><span class="ttag">Python</span><span class="ttag">LangGraph</span><span class="ttag">BGE-m3</span><span class="ttag">Gemini API</span><span class="ttag">LangChain</span><span class="ttag">RAG</span><span class="ttag">ollama</span></div>
+        </div>
+        <div class="proj-foot">
+          <a href="projects/movie_reco.html" class="proj-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <!-- CleanSearch (no-ads) -->
+      <div class="proj-card rev d3" data-date="2026.03" data-contribution="100" data-type="personal vision">
         <div class="proj-thumb">
           <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
+            <span class="proj-thumb-ico">🔍</span>
             <span class="proj-thumb-label">이미지 준비 중</span>
           </div>
+        </div>
+        <div class="proj-head">
+          <div class="award-badge">🛜 배포 전</div>
+          <div class="proj-cat">AI · Web · Image Processing</div>
+          <h3 class="proj-title">클린서치: 광고 포스팅 필터</h3>
+          <p class="proj-sub">네이버 블로그 광고 필터링 웹페이지 · Image Hash + OCR 기반 광고성 포스팅 탐지</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2026.03 (1주)</span>
+            <span class="proj-chip">👥 개인 프로젝트</span>
+            <span class="proj-chip">💻 Claude</span>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-impact">
+            <div class="proj-impact-item">이모티콘·이미지 형태 광고까지 탐지하는 하이브리드 필터링</div>
+            <div class="proj-impact-item">기획~배포 자동화까지 E2E 웹 서비스 개발</div>
+          </div>
+          <div class="ttech"><span class="ttag">Python</span><span class="ttag">OpenCV</span><span class="ttag">EasyOCR</span><span class="ttag">Image Hashing</span><span class="ttag">Naver API</span></div>
+        </div>
+        <div class="proj-foot">
+          <a href="projects/no_ads.html" class="proj-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <!-- FIT:ON -->
+      <div class="proj-card rev d2" data-date="2025.04" data-contribution="30" data-type="planning">
+        <div class="proj-thumb">
+          <img loading="lazy" src="src/thumbnails/fiton_main.png" alt="FIT:ON">
         </div>
         <div class="proj-head">
           <div class="award-badge">🥇 우수상</div>
@@ -653,12 +693,9 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
       </div>
 
       <!-- AI 자동 분리수거 -->
-      <div class="proj-card rev d3">
+      <div class="proj-card rev d3" data-date="2023.06" data-contribution="40" data-type="vision">
         <div class="proj-thumb">
-          <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
-            <span class="proj-thumb-label">이미지 준비 중</span>
-          </div>
+          <img loading="lazy" src="src/thumbnails/recycling_main.png" alt="AI 자동 분리수거">
         </div>
         <div class="proj-head">
           <div class="proj-cat">Vision AI · IoT · Hardware</div>
@@ -682,13 +719,37 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
         </div>
       </div>
 
-      <!-- 쓰레기 무단투기 -->
-      <div class="proj-card rev d4">
+      <!-- Booklink: 이어봇 -->
+      <div class="proj-card rev d4" data-date="2025.12" data-contribution="70" data-type="planning">
         <div class="proj-thumb">
-          <div class="proj-thumb-inner">
-            <span class="proj-thumb-ico">📷</span>
-            <span class="proj-thumb-label">이미지 준비 중</span>
+          <img loading="lazy" src="src/thumbnails/booklink_main.png" alt="BookLink: 도서 추천 이동형 로봇" class="proj-thumb-img">
+        </div>
+        <div class="proj-head">
+          <div class="award-badge"> 발표 완료 </div>
+          <div class="proj-cat">AI · Robot · Design Thinking</div>
+          <h3 class="proj-title">BookLink: 이어봇</h3>
+          <p class="proj-sub"> 자율주행 로봇을 통해 도서관을 '느슨한 연결감'의 공간으로 기능하도록</p>
+          <div class="proj-chips">
+            <span class="proj-chip">📅 2025.12 — 2026.01</span>
+            <span class="proj-chip">👥 4인 · 기여도 70%</span>
           </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-impact">
+            <div class="proj-impact-item">도서관 이용자 40명 기반 가설 검증 설문 (4/4 통과)</div>
+            <div class="proj-impact-item">LLM + RFID + 자율주행 통합 솔루션 설계</div>
+          </div>
+          <div class="ttech"><span class="ttag">LLM</span><span class="ttag">RFID</span><span class="ttag">자율주행</span><span class="ttag">LiDAR</span><span class="ttag">Design Thinking</span></div>
+        </div>
+        <div class="proj-foot">
+          <a href="projects/booklink.html" class="proj-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <!-- 쓰레기 무단투기 -->
+      <div class="proj-card rev d4" data-date="2025.08" data-contribution="40" data-type="data">
+        <div class="proj-thumb">
+          <img loading="lazy" src="src/thumbnails/trash_main.png" alt="쓰레기 무단투기 현황 분석">
         </div>
         <div class="proj-head">
           <div class="award-badge">🥇 우수상</div>
@@ -697,7 +758,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
           <p class="proj-sub">서울시 생활쓰레기 무단투기 발생환경 분석 · '깨진 유리창 효과' 검증</p>
           <div class="proj-chips">
             <span class="proj-chip">📅 2025.07 — 08</span>
-            <span class="proj-chip">👥 4인 · PM</span>
+            <span class="proj-chip">👥 4인 · 기여도 40%</span>
           </div>
         </div>
         <div class="proj-body">
@@ -715,7 +776,6 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
     </div>
   </div>
 </section>
-
 <!-- TIMELINE / JOURNEY -->
 <section id="timeline">
   <div class="container">
@@ -747,7 +807,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
 
           <!-- ▼ 기타 활동 -->
           <div class="tl-node tl-down tl-anchor-left" style="left:2%" tabindex="0" data-l="2" data-w="75">
-            <div class="tl-dot">🎓</div>
+            <div class="tl-dot">🏫</div>
             <div class="tl-pop">
               <div class="tl-pop-yr">2019.03 – 2025.08</div>
               <div class="tl-pop-ttl">인천대 전자공학과 입학</div>
@@ -820,7 +880,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
           </div>
 
           <div class="tl-node tl-up" style="left:71%" tabindex="0" data-l="71" data-w="4">
-            <div class="tl-dot">🏫</div>
+            <div class="tl-dot">🎓</div>
             <div class="tl-pop">
               <div class="tl-pop-yr">2025.03 – 06</div>
               <div class="tl-pop-ttl">고려대 AI 아카데미</div>
@@ -833,9 +893,19 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
             <div class="tl-dot">🏆</div>
             <div class="tl-pop">
               <div class="tl-pop-yr">2025.07 – 08</div>
-              <div class="tl-pop-ttl">수상 3건 달성</div>
-              <div class="tl-pop-desc">FIT:ON 우수상 · SWing 장려상 · 재정데이터분석 우수상</div>
+              <div class="tl-pop-ttl">수상 3건</div>
+              <div class="tl-pop-desc">FIT:ON 우수상 · SwingNet V2 장려상 · 재정데이터분석 우수상</div>
               <span class="tl-pop-tag">수상</span>
+            </div>
+          </div>
+
+          <div class="tl-node tl-up" style="left:82%" tabindex="0" data-l="82" data-w="3">
+            <div class="tl-dot">🤖</div>
+            <div class="tl-pop">
+              <div class="tl-pop-yr">2025.12 – 2026.01</div>
+              <div class="tl-pop-ttl">한국 AI로봇 산업협회_로봇 디자인씽킹</div>
+              <div class="tl-pop-desc">도서추천 이동형 로봇</div>
+              <span class="tl-pop-tag">로봇 기획</span>
             </div>
           </div>
 
@@ -958,11 +1028,11 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:28px 24px
 <section id="awards">
   <div class="container">
     <div class="sec-label rev">/ achievements</div>
-    <h2 class="sec-title rev">수상 경력<span>.</span></h2>
+    <h2 class="sec-title rev">수상 내역<span>.</span></h2>
     <div class="award-grid">
-      <div class="aw-card rev d1"><div class="aw-ico">🏆</div><div class="aw-grade">우수상</div><h3 class="aw-title">서울시 쓰레기 무단투기 발생환경 분석</h3><div class="aw-org">국민참여 재정데이터분석 (한국재정정보원)</div><div class="aw-date">2025.08.08</div></div>
-      <div class="aw-card rev d2"><div class="aw-ico">🥈</div><div class="aw-grade">장려상</div><h3 class="aw-title">SWINGNET V2 — 골프스윙 시퀀싱 및 HPE</h3><div class="aw-org">SW경진대회 (고려대학교 지능정보SW아카데미)</div><div class="aw-date">2025.06.19</div></div>
-      <div class="aw-card rev d3"><div class="aw-ico">🏆</div><div class="aw-grade">우수상</div><h3 class="aw-title">FIT:ON — 인체공학 의자 추천 시스템</h3><div class="aw-org">아이디어경진대회 (한국경제신문)</div><div class="aw-date">2025.04.25</div></div>
+      <div class="aw-card rev d1"><div class="aw-ico">🏅</div><div class="aw-grade">우수상</div><h3 class="aw-title">서울시 쓰레기 무단투기 발생환경 분석</h3><div class="aw-org">국민참여 재정데이터분석 (한국재정정보원)</div><div class="aw-date">2025.08.08</div></div>
+      <div class="aw-card rev d2"><div class="aw-ico">🥉</div><div class="aw-grade">장려상</div><h3 class="aw-title">SWINGNET V2 — 골프스윙 시퀀싱 및 HPE</h3><div class="aw-org">SW경진대회 (고려대학교 지능정보SW아카데미)</div><div class="aw-date">2025.06.19</div></div>
+      <div class="aw-card rev d3"><div class="aw-ico">🏅</div><div class="aw-grade">우수상</div><h3 class="aw-title">FIT:ON — 인체공학 의자 추천 시스템</h3><div class="aw-org">아이디어경진대회 (한국경제신문)</div><div class="aw-date">2025.04.25</div></div>
     </div>
   </div>
 </section>
@@ -1046,6 +1116,51 @@ const obs = new IntersectionObserver(es => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }});
 }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.rev,.rev-l,.rev-r').forEach(el => obs.observe(el));
+
+// ===== PROJECT FILTER =====
+(function(){
+  const grid = document.querySelector('.proj-grid');
+  const buttons = document.querySelectorAll('.proj-filter-btn');
+  const originalCards = Array.from(document.querySelectorAll('.proj-card'));
+
+  function applyFilter(filter) {
+    let sorted = [...originalCards];
+
+    if (filter === 'latest') {
+      sorted.sort((a, b) => {
+        const dateA = parseFloat(a.dataset.date.replace(/\./g, '')) || 0;
+        const dateB = parseFloat(b.dataset.date.replace(/\./g, '')) || 0;
+        return dateB - dateA;
+      });
+    } else if (filter === 'contribution') {
+      sorted.sort((a, b) => {
+        const contribA = parseFloat(a.dataset.contribution) || 0;
+        const contribB = parseFloat(b.dataset.contribution) || 0;
+        return contribB - contribA;
+      });
+    } else if (filter === 'vision' || filter === 'planning' || filter === 'personal') {
+      sorted = sorted.filter(card => {
+        const typeStr = (card.dataset.type || '').trim();
+        const types = typeStr.split(' ').map(t => t.trim()).filter(t => t);
+        return types.includes(filter);
+      });
+    }
+
+    // 그리드를 비우고 정렬/필터링된 카드만 추가
+    grid.innerHTML = '';
+    sorted.forEach(card => grid.appendChild(card));
+  }
+
+  // 버튼 클릭 이벤트
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(filter);
+    });
+  });
+})();
 
 // ===== PROJECT TOGGLE =====
 function tp(id, btn) {
