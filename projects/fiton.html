@@ -69,16 +69,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);bac
 .meta-item{display:flex;flex-direction:column;gap:3px}
 .meta-label{font-size:.72rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 .meta-val{font-size:.9rem;font-weight:600}
-.proj-content{padding:60px 0 100px}
+.proj-content{padding:0 0 100px}
 .section{margin-bottom:56px}
 .section-h{font-size:1.3rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .section-h::before{content:'';display:inline-block;width:4px;height:20px;background:var(--proj);border-radius:2px}
-.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--card);border:2px dashed rgba(124,58,237,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+.img-placeholder{width:100%;aspect-ratio:16/9;background:#ffffff;border:2px dashed rgba(124,58,237,.25);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--dim);font-size:.88rem;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
 .img-placeholder:hover{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.04)}
 .img-placeholder svg{color:var(--proj);opacity:.5}
 .img-placeholder .hint{font-size:.75rem;color:var(--dim);margin-top:4px}
 .img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:inherit}
 .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .img-sm{aspect-ratio:4/3}
 .abstract-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--proj);border-radius:var(--r);padding:28px}
